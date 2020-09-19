@@ -1,0 +1,5 @@
+*.obj
+CMakeLists.txt.user
+*.cmake
+Makefile
+CMakeFiles/
