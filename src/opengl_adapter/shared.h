@@ -3,7 +3,7 @@
 
 #include <string>
 #include <type_traits>
-#include <typeinfo>
+#include <memory>
 
 namespace LAM {
 
@@ -78,7 +78,7 @@ namespace LAM {
 
         // Equality.
         bool operator==(const Vec2& vec) const noexcept { return (this->x == vec.x)&&(this->y == vec.y); }
-        bool operator!=(const Vec2& vec) const noexcept { return (this->x != vec.x)||(this->y != vec.y); }
+        bool operator!=(const Vec2& vec) const noexcept { return !(*this == vec); }
     };
 
     /**
