@@ -42,11 +42,9 @@ Window::~Window() {
         glfwDestroyWindow(this->handle);
 }
 
-// TODO
-void Window::Open() const {
+void Window::GrabContext() {
     glfwMakeContextCurrent(this->handle);
 }
-void Window::Close() {}
 
 void Window::SetInput() {
     glfwSetInputMode(this->handle, GLFW_STICKY_KEYS, GL_TRUE);

@@ -26,12 +26,10 @@ namespace LAM {
         Window(std::string& title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
         virtual ~Window();
 
-
         /*
-         * TODO: open & close function. (Do we need them?)
+         * Call to make window display context.
          */
-        void Open() const;
-        void Close();
+        void GrabContext();
 
         /*
          * Size manipulations.

@@ -13,19 +13,24 @@ int main() {
     LAM::AppInit();
 
     LAM::Window wind("Test", {600, 800});
-    wind.Open();
+    wind.GrabContext();
 
     uint counter{};
 
     wind.SetInput();
 
+    auto cur_color = LAM::Color::CYAN;
+
+    std::cout << sizeof(cur_color) << std::endl;
+
     do {
-        LAM::SetClearColor(LAM::Color::CYAN);
+        LAM::SetClearColor(cur_color);
 
         ++counter;
         wind.Render();
         if (counter == 100) {
             wind.SetSize({600, 480});
+            cur_color = LAM::Color::GREEN;
             std::cout << wind.GetPos() << std::endl
                       << wind.GetSize() << std::endl;
         }
