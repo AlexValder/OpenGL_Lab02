@@ -129,6 +129,9 @@ namespace LAM {
         constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, float Alpha)
             : A(static_cast<uint8_t>(255*Alpha)), R(Red), G(Green), B(Blue) {}
 
-        static const Color RED, BLUE, GREEN, CYAN, MAGENTA, BLACK, WHITE;
+        static const Color RED, GREEN, BLUE,
+                            CYAN, MAGENTA, YELLOW,
+                            LIGHTGRAY, TEAL, PURPLE, OLIVE,
+                            BLACK, GRAY, WHITE;
     };
 }
