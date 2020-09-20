@@ -3,9 +3,13 @@
 
 #include "opengl_adapter/Window.h"
 
+template <class T>
+std::ostream& operator<<(std::ostream& os, const LAM::Vec2<T>& td) {
+    return os << "(" << td.x << ", " << td.y << ")";
+}
 
-int main()
-{
+int main() {
+
     glfwInit();
 
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x Сглаживание
