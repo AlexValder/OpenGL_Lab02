@@ -1,5 +1,11 @@
-#ifndef SHARED_H
-#define SHARED_H
+#pragma once
+
+// GLEW
+#define GLEW_STATIC
+#include <GL/glew.h>
+// GLFW
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 #include <string>
 #include <type_traits>
@@ -116,6 +122,8 @@ namespace LAM {
     T dot_product(const Vec2<T>& vec1, const Vec2<T>& vec2) noexcept {
         return vec1.dot_product(vec2);
     }
-}
 
-#endif // SHARED_H
+    enum class Keys : int32_t {
+
+    };
+}

@@ -1,6 +1,6 @@
 #include <iostream>
-#include <thread>
 
+#include "opengl_adapter/Application.h"
 #include "opengl_adapter/Window.h"
 
 template <class T>
@@ -10,34 +10,30 @@ std::ostream& operator<<(std::ostream& os, const LAM::Vec2<T>& td) {
 
 int main() {
 
-    glfwInit();
+    LAM::AppInit();
 
-    glfwWindowHint(GLFW_SAMPLES, 4); // 4x Сглаживание
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Мы хотим использовать OpenGL 3.3
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    LAM::Window wind("Test", {600, 800});
+    wind.Open();
 
-    LAM::Vec2<uint16_t> td = {600, 800};
+    uint counter{};
 
-    try {
-        LAM::Window wind("Test", td);
-        wind.Open();
+    wind.SetInput();
 
-        glewExperimental=true;
-        glewInit();
-        wind.SetInput();
+    do {
+        ++counter;
+        glClearColor(0, 255, 255, 0.0f);
 
-        do {
-            glClearColor(0, 255, 255, 0.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        wind.Render();
+        if (counter == 100) {
+            wind.SetSize({600, 480});
+            std::cout << wind.GetPos() << std::endl
+                      << wind.GetSize() << std::endl;
+        }
 
-            glClear(GL_COLOR_BUFFER_BIT);
-            wind.Render();
+    } while(wind.AboutToClose());
 
-        } while(wind.AboutToClose());
-    }
-    catch(std::exception& ex) {
-        std::cerr << ex.what() << std::endl;
-        glfwTerminate();
-    }
+    LAM::AppClose();
 
     return 0;
 }

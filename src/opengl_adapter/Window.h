@@ -1,12 +1,4 @@
-#ifndef WINDOW_H
-#define WINDOW_H
-
-// GLEW
-#define GLEW_STATIC
-#include <GL/glew.h>
-// GLFW
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#pragma once
 #include "shared.h"
 #include <map>
 
@@ -21,21 +13,53 @@ namespace LAM {
     class Window {
     public:
 
-        Window(const char* title, const Vec2<uint16_t>& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(const char* title, Vec2<uint16_t>&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(std::string& title, const Vec2<uint16_t>& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(std::string& title, Vec2<uint16_t>&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        using coord_t = int;
+        using Point = Vec2<coord_t>;
+
+        /*
+         * Several overloaded constructors for different parameters, also a virtual destructor for potential
+         * inheritance.
+         */
+        Window(const char* title, const Point& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(const char* title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(std::string& title, const Point& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(std::string& title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
         virtual ~Window();
 
+
+        /*
+         * TODO: open & close function. (Do we need them?)
+         */
         void Open() const;
         void Close();
 
+        /*
+         * Size manipulations.
+         */
+        Point GetSize() const;
+        void SetSize(const Point& size);
+        void SetSize(coord_t width, coord_t height);
+
+        /*
+         * Position manipulation.
+         */
+        void SetPos(const Point& new_pos);
+        void MoveBy(const Point& offset);
+        Point GetPos() const;
+
+        /*
+         * Title getter & setter.
+         */
         void SetTitle(const std::string& title);
+        void SetTitle(const char* title);
         std::string GetTitle() const;
 
         void SetInput();
-        int IsPressed(int key);
+        int IsPressed(int key) const;
 
+        /*
+         * Call this every frame.
+         */
         void Render();
 
         bool AboutToClose() const;
@@ -44,11 +68,9 @@ namespace LAM {
         GLFWwindow* handle;
         std::string title;
 
-        void master_ctor(const char*, uint16_t, uint16_t, GLFWmonitor*, Window*);
+        void master_ctor(const char*, coord_t, coord_t, GLFWmonitor*, Window*);
 
         static std::map<GLFWwindow*, Window*> _windows;
         static void callback(GLFWwindow*);
     };
 }
-
-#endif // WINDOW_H
