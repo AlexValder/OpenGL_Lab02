@@ -36,6 +36,7 @@ namespace LAM {
          */
         Point GetSize() const;
         void SetSize(const Point& size);
+        void SetSize(Point&& size);
         void SetSize(coord_t width, coord_t height);
 
         /*
@@ -53,7 +54,7 @@ namespace LAM {
         std::string GetTitle() const;
 
         void SetInput();
-        int IsPressed(int key) const;
+        KeyMode PressedOrReleased(Keys key) const;
 
         /*
          * Call this every frame.

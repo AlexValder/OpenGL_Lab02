@@ -1,4 +1,3 @@
-#ifndef WINDOW_H
 #include "Window.h"
 #include <iostream>
 #include <functional>
@@ -50,8 +49,8 @@ void Window::SetInput() {
     glfwSetInputMode(this->handle, GLFW_STICKY_KEYS, GL_TRUE);
 }
 
-int Window::IsPressed(int key) const {
-    return glfwGetKey(this->handle, key);
+LAM::KeyMode Window::PressedOrReleased(Keys key) const {
+   return static_cast<KeyMode>(glfwGetKey(this->handle, static_cast<int>(key)));
 }
 
 void Window::Render() {
@@ -61,8 +60,8 @@ void Window::Render() {
 
 bool Window::AboutToClose() const {
     if (this->handle)
-        return !glfwWindowShouldClose(this->handle);
-    else return false;
+        return glfwWindowShouldClose(this->handle);
+    return true;
 }
 
 // Set title.
@@ -84,6 +83,10 @@ std::string Window::GetTitle() const {
 // Size manipulation.
 void Window::SetSize(const Point& size) {
     glfwSetWindowSize(this->handle, size.x, size.y);
+}
+
+void Window::SetSize(Point&& size) {
+    glfwSetWindowSize(this->handle, std::move(size.x), std::move(size.y));
 }
 
 void Window::SetSize(coord_t width, coord_t height) {
@@ -121,5 +124,3 @@ void Window::callback(GLFWwindow* w) {
        _windows.erase(w);
     }
 }
-
-#endif // WINDOW_H

@@ -35,7 +35,7 @@ int main() {
                       << wind.GetSize() << std::endl;
         }
 
-    } while(wind.AboutToClose());
+    } while(!wind.AboutToClose());
 
     LAM::AppClose();
 
