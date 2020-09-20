@@ -14,3 +14,8 @@ void LAM::AppInit() {
 void LAM::AppClose() {
     glfwTerminate();
 }
+
+void LAM::SetClearColor(Color color) {
+    glClearColor(color.R, color.G, color.B, color.A);
+    glClear(GL_COLOR_BUFFER_BIT);
+}

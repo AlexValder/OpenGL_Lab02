@@ -20,10 +20,9 @@ int main() {
     wind.SetInput();
 
     do {
-        ++counter;
-        glClearColor(0, 255, 255, 0.0f);
+        LAM::SetClearColor(LAM::Color::CYAN);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        ++counter;
         wind.Render();
         if (counter == 100) {
             wind.SetSize({600, 480});

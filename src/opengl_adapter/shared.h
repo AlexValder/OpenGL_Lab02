@@ -123,7 +123,12 @@ namespace LAM {
         return vec1.dot_product(vec2);
     }
 
-    enum class Keys : int32_t {
+    struct Color final {
+        float A;
+        uint8_t R, G, B;
 
+        constexpr Color(uint8_t R, uint8_t G, uint8_t B, float A) : A(A), R(R), G(G), B(B) {}
+
+        static const Color RED, BLUE, GREEN, CYAN, MAGENTA, BLACK, WHITE;
     };
 }
