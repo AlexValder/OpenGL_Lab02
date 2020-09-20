@@ -124,10 +124,10 @@ namespace LAM {
     }
 
     struct Color final {
-        float A;
-        uint8_t R, G, B;
+        uint8_t A, R, G, B;
 
-        constexpr Color(uint8_t R, uint8_t G, uint8_t B, float A) : A(A), R(R), G(G), B(B) {}
+        constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, float Alpha)
+            : A(static_cast<uint8_t>(255*Alpha)), R(Red), G(Green), B(Blue) {}
 
         static const Color RED, BLUE, GREEN, CYAN, MAGENTA, BLACK, WHITE;
     };
