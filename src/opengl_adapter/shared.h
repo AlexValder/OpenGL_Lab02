@@ -45,8 +45,8 @@ namespace LAM {
 
         // Ctors.
         constexpr Vec2(T x = {}, T y = {}) : x(x), y(y) {}
-        Vec2(const Vec2& vec) : x(vec.x), y(vec.y) {}
-        Vec2(Vec2&& vec) noexcept : x(std::move(vec.x)), y(std::move(vec.y)) {}
+        constexpr Vec2(const Vec2& vec) : x(vec.x), y(vec.y) {}
+        constexpr Vec2(Vec2&& vec) noexcept : x(std::move(vec.x)), y(std::move(vec.y)) {}
 
         Vec2 operator*(int k) const noexcept {
             return Vec2(this->x * k, this->y * k);
