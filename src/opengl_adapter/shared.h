@@ -135,6 +135,16 @@ namespace LAM {
                             BLACK, GRAY, WHITE;
     };
 
+    enum class GraphicPrimitives : int {
+        Points = GL_POINTS,
+        LineStrip = GL_LINE_STRIP,
+        LineLoop = GL_LINE_LOOP,
+        Lines = GL_LINES,
+        LineStripAdjacency = GL_LINE_STRIP_ADJACENCY,
+        TriangleStrip = GL_TRIANGLE_STRIP,
+        TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY
+    };
+
     enum class Keys : int {
         Unknown = GLFW_KEY_UNKNOWN,
         Space = GLFW_KEY_SPACE,

@@ -9,6 +9,14 @@ std::map<GLFWwindow*, Window*> Window::_windows = {};
 /// PUBLIC
 
 // Ctors.
+
+Window::Window(Window&& window) noexcept {
+    this->handle = window.handle;
+    window.handle = nullptr;
+
+    this->title = std::move(window.title);
+}
+
 Window::Window(const char* title, const Point& size, GLFWmonitor* monitor, Window* share) {
     this->master_ctor(title, size.x, size.y, monitor, share);
 }

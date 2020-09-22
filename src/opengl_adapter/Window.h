@@ -24,6 +24,9 @@ namespace LAM {
         Window(const char* title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
         Window(std::string& title, const Point& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
         Window(std::string& title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+
+        Window(const Window& window) = delete;
+        Window(Window&& window) noexcept;
         virtual ~Window();
 
         /*
