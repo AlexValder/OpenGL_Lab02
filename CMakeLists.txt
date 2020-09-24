@@ -10,7 +10,7 @@ project(WindowsOpenGL)                       # this sets the project name
 # `sources` and `data`.
 file(GLOB_RECURSE sources      src/*.cpp src/*.h
                                src/opengl_adapter/*.cpp src/opengl_adapter/*.h
-                               )
+                               src/objects_to_draw/*.cpp src/objects_to_draw/*.h)
 
 file(GLOB_RECURSE data resources/*)
 # You can use set(sources src/main.cpp) etc if you don't want to

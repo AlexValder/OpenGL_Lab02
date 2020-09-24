@@ -7,6 +7,8 @@ constexpr size_t num = 1;
 #include "opengl_adapter/Renderer.h"
 #include "opengl_adapter/Window.h"
 
+#include "objects_to_draw/Cube.h"
+
 // to print a Vec2 as (x, y).
 template <class T>
 std::ostream& operator<<(std::ostream& os, const LAM::Vec2<T>& td) {
@@ -60,7 +62,6 @@ int main(int argc, const char** argv) {
         windows[i].SetSize(sizes[i]);
         windows[i].SetInput();
     }
-
 
     uint counter{};
 
