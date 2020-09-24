@@ -28,21 +28,27 @@ void move_forward(T vec[], size_t size) {
 }
 
 
-int main() {
+int main(int argc, const char** argv) {
 
     LAM::Color colors[] = {LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY};
     LAM::Window::Point sizes[] = {{800, 600}, {800, 700}, {800, 800}, {800, 700}};
 
     LAM::AppInit();
 
+    std::cout << "Loban A., PA-18-2" << std::endl;
+    std::string custom_title = (argc >= 2) ? argv[1] : "Test";
+    LAM::Window::Point begin_size = (argc >= 4) ?
+                sizes[0] = LAM::Window::Point(atoi(argv[2]), atoi(argv[3]))
+              : sizes[0];
+
     std::array<LAM::Window, num> windows = {
-        LAM::Window("Test1", sizes[0])/*,
+        LAM::Window(custom_title, begin_size)/*,
         LAM::Window("Test2", sizes[1]),
         LAM::Window("Test3", sizes[2])*/
     };
 
-    assert(0 <= num <= sizeof(colors));
-    assert(0 <= num <= sizeof(sizes));
+    assert(0 <= num && num <= sizeof(colors));
+    assert(0 <= num && num <= sizeof(sizes));
     assert(num == windows.size());
 
     for (size_t i = 0; i < windows.size(); ++i) {
