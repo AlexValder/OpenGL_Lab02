@@ -66,13 +66,12 @@ namespace LAM {
 
         bool AboutToClose() const;
 
-    private:
         GLFWwindow* handle;
+    private:
         std::string title;
 
         void master_ctor(const char*, coord_t, coord_t, GLFWmonitor*, Window*);
 
         static std::map<GLFWwindow*, Window*> _windows;
-        static void callback(GLFWwindow*);
     };
 }

@@ -40,7 +40,6 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, GLFWm
         throw WindowException("Failed to create a window.");
 
     _windows.insert({this->handle, this});
-    glfwSetWindowCloseCallback(this->handle, &Window::callback);
 }
 
 // Dtor.
@@ -125,10 +124,3 @@ Window::Point Window::GetPos() const {
 }
 
 /// PRIVATE
-
-void Window::callback(GLFWwindow* w) {
-    if (_windows.find(w) != _windows.end()) {
-       _windows[w]->handle = nullptr;
-       _windows.erase(w);
-    }
-}
