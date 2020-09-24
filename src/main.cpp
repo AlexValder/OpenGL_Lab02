@@ -41,8 +41,8 @@ int main() {
         LAM::Window("Test3", sizes[2])*/
     };
 
-    assert(num <= sizeof(colors));
-    assert(num <= sizeof(sizes));
+    assert(0 <= num <= sizeof(colors));
+    assert(0 <= num <= sizeof(sizes));
     assert(num == windows.size());
 
     for (size_t i = 0; i < windows.size(); ++i) {
