@@ -13,6 +13,8 @@ namespace LAM {
     class Window {
     public:
 
+        friend class MainRenderer;
+
         using coord_t = int;
         using Point = Vec2<coord_t>;
 
@@ -59,11 +61,6 @@ namespace LAM {
         void SetInput();
         KeyMode PressedOrReleased(Keys key) const;
 
-        /*
-         * Call this every frame.
-         */
-        void Render();
-
         bool AboutToClose() const;
 
         GLFWwindow* handle;
@@ -71,7 +68,5 @@ namespace LAM {
         std::string title;
 
         void master_ctor(const char*, coord_t, coord_t, GLFWmonitor*, Window*);
-
-        static std::map<GLFWwindow*, Window*> _windows;
     };
 }

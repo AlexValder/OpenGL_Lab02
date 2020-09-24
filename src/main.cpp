@@ -3,8 +3,8 @@
 
 constexpr size_t num = 1;
 
-#include "opengl_adapter/Application.h"
 #include "opengl_adapter/Window.h"
+#include "opengl_adapter/Renderer.h"
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const LAM::Vec2<T>& td) {
@@ -30,10 +30,11 @@ void move_forward(T vec[], size_t size) {
 
 int main(int argc, const char** argv) {
 
-    LAM::Color colors[] = {LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY};
+    LAM::Color colors[] = {LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::OLIVE};
     LAM::Window::Point sizes[] = {{800, 600}, {800, 700}, {800, 800}, {800, 700}};
 
-    LAM::AppInit();
+    LAM::RendererBase* renderer = new LAM::MainRenderer;
+    renderer->Init();
 
     std::cout << "Loban A., PA-18-2" << std::endl;
     std::string custom_title = (argc >= 2) ? argv[1] : "Test";
@@ -63,9 +64,9 @@ int main(int argc, const char** argv) {
         ++counter;
 
         for (size_t i = 0; i < windows.size(); ++i) {
-            windows[i].GrabContext();
-            LAM::SetClearColor(colors[i]);
-            windows[i].Render();
+            renderer->MakeContextCurrent(windows[i]);
+            renderer->SetClearColor(colors[i]);
+            renderer->RenderWindow(windows[i]);
         }
 
         if (counter == 100) {
@@ -81,7 +82,7 @@ int main(int argc, const char** argv) {
 
     } while(AreAllOpen(windows));
 
-    LAM::AppClose();
+    delete renderer;
 
     return 0;
 }

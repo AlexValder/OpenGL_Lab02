@@ -4,10 +4,6 @@
 
 using namespace LAM;
 
-std::map<GLFWwindow*, Window*> Window::_windows = {};
-
-/// PUBLIC
-
 // Ctors.
 
 Window::Window(Window&& window) noexcept {
@@ -38,8 +34,6 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, GLFWm
 
     if (!this->handle)
         throw WindowException("Failed to create a window.");
-
-    _windows.insert({this->handle, this});
 }
 
 // Dtor.
@@ -48,9 +42,6 @@ Window::~Window() {
         glfwDestroyWindow(this->handle);
 }
 
-void Window::GrabContext() {
-    glfwMakeContextCurrent(this->handle);
-}
 
 void Window::SetInput() {
     glfwSetInputMode(this->handle, GLFW_STICKY_KEYS, GL_TRUE);
@@ -58,11 +49,6 @@ void Window::SetInput() {
 
 LAM::KeyMode Window::PressedOrReleased(Keys key) const {
    return static_cast<KeyMode>(glfwGetKey(this->handle, static_cast<int>(key)));
-}
-
-void Window::Render() {
-    glfwSwapBuffers(this->handle);
-    glfwPollEvents();
 }
 
 bool Window::AboutToClose() const {
@@ -122,5 +108,3 @@ Window::Point Window::GetPos() const {
     glfwGetWindowPos(this->handle, &res.x, &res.y);
     return res;
 }
-
-/// PRIVATE
