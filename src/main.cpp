@@ -1,16 +1,19 @@
 #include <iostream>
 #include <array>
 
+// how many windows will be opened?
 constexpr size_t num = 1;
 
-#include "opengl_adapter/Window.h"
 #include "opengl_adapter/Renderer.h"
+#include "opengl_adapter/Window.h"
 
+// to print a Vec2 as (x, y).
 template <class T>
 std::ostream& operator<<(std::ostream& os, const LAM::Vec2<T>& td) {
     return os << "(" << td.x << ", " << td.y << ")";
 }
 
+// are all windows open?
 template<typename T>
 bool AreAllOpen(const T& vec) {
     bool res = true;
@@ -20,6 +23,7 @@ bool AreAllOpen(const T& vec) {
     return res;
 }
 
+// for changing color and size.
 template <typename T>
 void move_forward(T vec[], size_t size) {
     for (size_t i = 2; i <= size; ++i) {
@@ -30,7 +34,7 @@ void move_forward(T vec[], size_t size) {
 
 int main(int argc, const char** argv) {
 
-    LAM::Color colors[] = {LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::OLIVE};
+    LAM::Color colors[] = { LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::OLIVE };
     LAM::Window::Point sizes[] = {{800, 600}, {800, 700}, {800, 800}, {800, 700}};
 
     LAM::RendererBase* renderer = new LAM::MainRenderer;
