@@ -4,6 +4,17 @@
 
 using namespace LAM;
 
+void resize(GLFWwindow * _, int width, int height) {
+    double ratio = width/static_cast<double>(height);
+    glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1., 1., 1., -1.);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
 // Ctors.
 
 Window::Window(Window&& window) noexcept {
@@ -34,6 +45,9 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, GLFWm
 
     if (!this->handle)
         throw WindowException("Failed to create a window.");
+
+    glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
+    glfwSetWindowSizeCallback(this->handle, &resize);
 }
 
 // Dtor.
@@ -107,4 +121,15 @@ Window::Point Window::GetPos() const {
     Point res;
     glfwGetWindowPos(this->handle, &res.x, &res.y);
     return res;
+}
+
+GLFWwindow* Window::GetHandle() {
+    return this->handle;
+}
+
+void Window::Close() {
+    if (this->handle) {
+        glfwDestroyWindow(this->handle);
+        this->handle = nullptr;
+    }
 }

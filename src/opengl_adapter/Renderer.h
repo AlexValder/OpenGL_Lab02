@@ -1,16 +1,18 @@
 #pragma once
 #include "Window.h"
+#include <iostream>
 
 namespace LAM {
     class RendererBase {
     public:
-        virtual void Init() = 0;
+        virtual void InitGLFW(int major_version, int minor_version) = 0;
+        virtual void InitGLEW() = 0;
         virtual void MakeContextCurrent(Window& w) { glfwMakeContextCurrent(w.handle); }
         virtual void SwapBuffers(Window&) = 0;
         virtual void RenderWindow(Window&) = 0;
         virtual void RenderTriangles(GLfloat vertices[], GLfloat colors[]) = 0;
         virtual void SetClearColor(Color) = 0;
-        virtual void RenderVBO() = 0;
+        virtual void RenderVBO(GLuint VAO, GLenum TYPE, int size) = 0;
         void PollEvents() { glfwPollEvents(); }
         virtual ~RendererBase() {}
     };
@@ -18,15 +20,22 @@ namespace LAM {
     class MainRenderer : public RendererBase {
     public:
 
-        void Init() override {
-            glfwInit();
+        void InitGLFW(int major_version = 2, int minor_version = 1) override {
+            if(!glfwInit()) {
+                std::cerr << "Failed to initialize GLFW" << std::endl;
+                exit(-1);
+            }
 
-            glfwWindowHint(GLFW_SAMPLES, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
+        }
 
+        void InitGLEW() override {
             glewExperimental = true;
-            glewInit();
+            if(glewInit() != GLEW_OK) {
+                std::cerr << "Failed to initialize GLEW" << std::endl;
+                exit(-1);
+            }
         }
 
         void SwapBuffers(Window& w) override {
@@ -42,13 +51,16 @@ namespace LAM {
             ;
         }
 
-        void RenderVBO() override {
-            ;
+        void RenderVBO(GLuint VAO, GLenum TYPE, int size) override {
+            glBindVertexArray(VAO);
+            glEnableVertexAttribArray(0);
+            glDrawArrays(TYPE, 0, size);
+            glDisableVertexAttribArray(0);
         }
 
         void SetClearColor(Color color) override {
-            glClearColor(color.R, color.G, color.B, color.A);
-            glClear(GL_COLOR_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClearColor(color.R, color.G, color.B, color.A/255.f);
         }
 
         ~MainRenderer() override {

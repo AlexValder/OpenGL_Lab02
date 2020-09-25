@@ -1,9 +1,6 @@
 #include <iostream>
 #include <array>
 
-// how many windows will be opened?
-constexpr size_t num = 1;
-
 #include "opengl_adapter/Renderer.h"
 #include "opengl_adapter/Window.h"
 
@@ -33,61 +30,54 @@ void move_forward(T vec[], size_t size) {
     }
 }
 
+// how many windows will be opened?
+constexpr size_t num = 3;
 
-int main(int argc, const char** argv) {
-
-    LAM::Color colors[] = { LAM::Color::CYAN, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::OLIVE };
-    LAM::Window::Point sizes[] = {{800, 600}, {800, 700}, {800, 800}, {800, 700}};
-
-    LAM::RendererBase* renderer = new LAM::MainRenderer;
-    renderer->Init();
+int main() {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
-    std::string custom_title = (argc >= 2) ? argv[1] : "Test";
-    LAM::Window::Point begin_size = (argc >= 4) ?
-                sizes[0] = LAM::Window::Point(atoi(argv[2]), atoi(argv[3]))
-              : sizes[0];
+
+    LAM::Color colors[] = { LAM::Color::BLUE, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY };
+
+    LAM::RendererBase* renderer = new LAM::MainRenderer;
+    renderer->InitGLFW(2, 1);
 
     std::array<LAM::Window, num> windows = {
-        LAM::Window(custom_title, begin_size)/*,
-        LAM::Window("Test2", sizes[1]),
-        LAM::Window("Test3", sizes[2])*/
+        LAM::Window("Test1", {800, 800}),
+        LAM::Window("Test2", {500, 500}),
+        LAM::Window("Test3", {800, 800})
     };
 
-    assert(0 <= num && num <= sizeof(colors));
-    assert(0 <= num && num <= sizeof(sizes));
+    assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
     assert(num == windows.size());
 
-    for (size_t i = 0; i < windows.size(); ++i) {
-        windows[i].SetSize(sizes[i]);
-        windows[i].SetInput();
-    }
+    renderer->MakeContextCurrent(windows[1]);
+    renderer->InitGLEW();
+
+    LAM::Cube::Init();
 
     uint counter{};
 
-    do {
+    while(AreAllOpen(windows)) {
         ++counter;
 
         for (size_t i = 0; i < windows.size(); ++i) {
-            renderer->MakeContextCurrent(windows[i]);
             renderer->SetClearColor(colors[i]);
-            renderer->RenderWindow(windows[i]);
+            renderer->MakeContextCurrent(windows[i]);
+            renderer->RenderVBO(LAM::Cube::VAO, LAM::Cube::TYPE, LAM::Cube::vertices.size());
+            renderer->SwapBuffers(windows[i]);
+            renderer->PollEvents();
         }
 
         if (counter == 100) {
-            counter = 0;
-
             move_forward(colors, sizeof(colors)/sizeof(colors[0]));
-            move_forward(sizes, sizeof(sizes)/sizeof(sizes[0]));
-
-            for (size_t i = 0; i < windows.size(); ++i) {
-                windows[i].SetSize(sizes[i]);
-            }
+            counter = 0;
         }
 
-    } while(AreAllOpen(windows));
+    }
+
+    LAM::Cube::Deinit();
 
     delete renderer;
-
     return 0;
 }

@@ -14,6 +14,7 @@ namespace LAM {
     public:
 
         friend class MainRenderer;
+        friend class RendererBase;
 
         using coord_t = int;
         using Point = Vec2<coord_t>;
@@ -30,11 +31,6 @@ namespace LAM {
         Window(const Window& window) = delete;
         Window(Window&& window) noexcept;
         virtual ~Window();
-
-        /*
-         * Call to make window display context.
-         */
-        void GrabContext();
 
         /*
          * Size manipulations.
@@ -62,9 +58,12 @@ namespace LAM {
         KeyMode PressedOrReleased(Keys key) const;
 
         bool AboutToClose() const;
+        void Close();
 
-        GLFWwindow* handle;
+        GLFWwindow* GetHandle();
+
     private:
+        GLFWwindow* handle;
         std::string title;
 
         void master_ctor(const char*, coord_t, coord_t, GLFWmonitor*, Window*);
