@@ -54,6 +54,7 @@ namespace LAM {
         void RenderVBO(GLuint VAO, GLenum TYPE, int size) override {
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
+            glLineWidth(5);
             glDrawArrays(TYPE, 0, size);
             glDisableVertexAttribArray(0);
         }

@@ -50,7 +50,7 @@ namespace LAM {
         };
 
         static GLuint VAO, VBO;
-        static GLenum TYPE = GL_LINES;
+        static GLenum TYPE = GL_LINE_STRIP;
 
         static void Init() {
             glGenBuffers(1, &VBO);
@@ -65,7 +65,7 @@ namespace LAM {
             glBindVertexArray(VAO);
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+            glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, nullptr);
 
             glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind VBO
             glBindVertexArray(0); // unbind VAO

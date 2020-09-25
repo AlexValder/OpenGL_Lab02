@@ -31,24 +31,31 @@ void move_forward(T vec[], size_t size) {
 }
 
 // how many windows will be opened?
-constexpr size_t num = 3;
+constexpr size_t num = 1;
 
 int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
 
-    LAM::Color colors[] = { LAM::Color::BLUE, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY };
+    LAM::Color colors[] = { LAM::Color::BLUE/*, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY */};
+    LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
 
     LAM::RendererBase* renderer = new LAM::MainRenderer;
     renderer->InitGLFW(2, 1);
 
+    assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
+    assert(num <= sizeof(pos)/sizeof(pos[0]));
+
     std::array<LAM::Window, num> windows = {
-        LAM::Window(argc >= 2 ? argv[1] :"Test1", {500, 500}),
-        LAM::Window(argc >= 3 ? argv[2] : "Test2", {500, 500}),
-        LAM::Window(argc >= 4 ? argv[3] : "Test3", {500, 500})
+        LAM::Window(argc >= 2 ? argv[1] : "Test1", {500, 500})/*,
+        LAM::Window(argc >= 3 ? argv[2] : "Test2", {600, 600}),
+        LAM::Window(argc >= 4 ? argv[3] : "Test3", {700, 700})*/
     };
 
-    assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
+    for (size_t i = 0; i < windows.size(); ++i) {
+        windows[i].SetPos(pos[i]);
+    }
+
     assert(num == windows.size());
 
     {

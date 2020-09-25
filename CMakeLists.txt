@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0) # setting this is required
+cmake_minimum_required(VERSION 3.11) # setting this is required
 project(WindowsOpenGL)                       # this sets the project name
 
 ###############################################################################
@@ -86,6 +86,7 @@ install(DIRECTORY resources DESTINATION share/${PROJECT_NAME})
 # be minimal here.
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_VERSION "1.0.0")
+set(OpenGL_GL_PREFERENCE "GLVND")
 
 # We don't want to split our program up into several incomplete pieces.
 set(CPACK_MONOLITHIC_INSTALL 1)
