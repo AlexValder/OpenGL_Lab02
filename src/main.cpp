@@ -33,7 +33,7 @@ void move_forward(T vec[], size_t size) {
 // how many windows will be opened?
 constexpr size_t num = 3;
 
-int main() {
+int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
 
@@ -43,15 +43,19 @@ int main() {
     renderer->InitGLFW(2, 1);
 
     std::array<LAM::Window, num> windows = {
-        LAM::Window("Test1", {800, 800}),
-        LAM::Window("Test2", {500, 500}),
-        LAM::Window("Test3", {800, 800})
+        LAM::Window(argc >= 2 ? argv[1] :"Test1", {500, 500}),
+        LAM::Window(argc >= 3 ? argv[2] : "Test2", {500, 500}),
+        LAM::Window(argc >= 4 ? argv[3] : "Test3", {500, 500})
     };
 
     assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
     assert(num == windows.size());
 
-    renderer->MakeContextCurrent(windows[1]);
+    {
+        size_t elem = argc >= 5 ? static_cast<size_t>(atoi(argv[4])) : 0;
+        if (elem >= windows.size()) elem = 0;
+        renderer->MakeContextCurrent(windows[elem]);
+    }
     renderer->InitGLEW();
 
     LAM::Cube::Init();
