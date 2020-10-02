@@ -65,7 +65,10 @@ int main(int argc, const char** argv) {
     }
     renderer->InitGLEW();
 
-    LAM::Cube::Init();
+    for (auto& wind : windows) {
+		renderer->MakeContextCurrent(wind);
+        LAM::Cube::Init();
+    }
 
     uint counter{};
 
