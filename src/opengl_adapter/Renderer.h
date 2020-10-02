@@ -54,8 +54,21 @@ namespace LAM {
         void RenderVBO(GLuint VAO, GLenum TYPE, int size) override {
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
+
+			glEnable(GL_DEPTH_TEST);
+
+			glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+
+ 
+			glPushMatrix(); // push the matrix
+			double angle = glfwGetTime() * 50.0f;
+			glRotatef(angle, 1.0, 1.0, 0.0); //apply transformation
+            
             glLineWidth(5);
             glDrawArrays(TYPE, 0, size);
+
+			glPopMatrix();
+            
             glDisableVertexAttribArray(0);
         }
 

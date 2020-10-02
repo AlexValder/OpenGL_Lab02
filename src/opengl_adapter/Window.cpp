@@ -129,7 +129,7 @@ GLFWwindow* Window::GetHandle() {
 
 void Window::Close() {
     if (this->handle) {
-        glfwDestroyWindow(this->handle);
+        glfwSetWindowShouldClose(this->handle, 1);
         this->handle = nullptr;
     }
 }
