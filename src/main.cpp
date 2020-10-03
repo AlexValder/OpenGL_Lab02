@@ -37,7 +37,7 @@ int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
 
-    LAM::Color colors[] = { LAM::Color::BLUE, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::GRAY };
+    LAM::Color colors[] = { LAM::Color::BLUE, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::BLACK };
     LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
 
     LAM::RendererBase* renderer = new LAM::MainRenderer;
