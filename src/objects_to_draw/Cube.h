@@ -50,7 +50,7 @@ namespace LAM {
         };
 
         static GLuint VAO, VBO;
-        static GLenum TYPE = GL_TRIANGLES;
+        static constexpr GraphPrimitives TYPE = GraphPrimitives::Line_Strip;
 
         static void Init() {
             glGenBuffers(1, &VBO);
@@ -79,5 +79,5 @@ namespace LAM {
             glDeleteVertexArrays(1, &VAO);
             glDeleteBuffers(1, &VBO);
         }
-    }
+    };
 }

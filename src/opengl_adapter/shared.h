@@ -135,14 +135,14 @@ namespace LAM {
                             BLACK, GRAY, WHITE;
     };
 
-    enum class GraphicPrimitives : int {
-        Points = GL_POINTS,
-        LineStrip = GL_LINE_STRIP,
-        LineLoop = GL_LINE_LOOP,
-        Lines = GL_LINES,
-        LineStripAdjacency = GL_LINE_STRIP_ADJACENCY,
-        TriangleStrip = GL_TRIANGLE_STRIP,
-        TriangleStripAdjacency = GL_TRIANGLE_STRIP_ADJACENCY
+    enum GraphPrimitives : uint32_t {
+        Points = GL_POINTS, // every vertice is a point
+        Lines = GL_LINES, // every 2 vertices form a line
+        Line_Strip = GL_LINE_STRIP, // lines connect the vertices
+        Line_Loop = GL_LINE_LOOP, // lines connect the vertices and form a loop
+        Triangles = GL_TRIANGLES, // every 3 vertices form a triangle
+        Triangle_Strip = GL_TRIANGLE_STRIP, // every next triangle uses 2 vertices of a previous one
+        Triangle_Fan = GL_TRIANGLE_FAN, // every next triangle uses the last one the previous one and the very first vertice
     };
 
     enum class Keys : int {
