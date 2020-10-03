@@ -23,10 +23,10 @@ namespace LAM {
          * Several overloaded constructors for different parameters, also a virtual destructor for potential
          * inheritance.
          */
-        Window(const char* title, const Point& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(const char* title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(std::string& title, const Point& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
-        Window(std::string& title, Point&& size, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(const char* title, const Point& size, bool resizable = true, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(const char* title, Point&& size, bool resizable = true, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(std::string& title, const Point& size, bool resizable = true, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
+        Window(std::string& title, Point&& size, bool resizable = true, GLFWmonitor* monitor = nullptr, Window* share = nullptr);
 
         Window(const Window& window) = delete;
         Window(Window&& window) noexcept;
@@ -66,6 +66,6 @@ namespace LAM {
         GLFWwindow* handle;
         std::string title;
 
-        void master_ctor(const char*, coord_t, coord_t, GLFWmonitor*, Window*);
+        void master_ctor(const char*, coord_t, coord_t, bool, GLFWmonitor*, Window*);
     };
 }

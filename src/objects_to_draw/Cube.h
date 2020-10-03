@@ -50,7 +50,7 @@ namespace LAM {
         };
 
         static GLuint VAO, VBO;
-        static constexpr GraphPrimitives TYPE = GraphPrimitives::Line_Strip;
+        static constexpr GraphPrimitives TYPE = GraphPrimitives::Triangles;
 
         static void Init() {
             glGenBuffers(1, &VBO);

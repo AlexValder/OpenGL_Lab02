@@ -47,9 +47,9 @@ int main(int argc, const char** argv) {
     assert(num <= sizeof(pos)/sizeof(pos[0]));
 
     std::array<LAM::Window, num> windows = {
-        LAM::Window(argc >= 2 ? argv[1] : "Test1", {500, 500}),
-        LAM::Window(argc >= 3 ? argv[2] : "Test2", {600, 600}),
-        LAM::Window(argc >= 4 ? argv[3] : "Test3", {700, 700})
+        LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700}, false),
+        LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475}, false),
+        LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200}, false)
     };
 
     for (size_t i = 0; i < windows.size(); ++i) {
@@ -58,11 +58,8 @@ int main(int argc, const char** argv) {
 
     assert(num == windows.size());
 
-    {
-        size_t elem = argc >= 5 ? static_cast<size_t>(atoi(argv[4])) : 0;
-        if (elem >= windows.size()) elem = 0;
-        renderer->MakeContextCurrent(windows[elem]);
-    }
+    renderer->MakeContextCurrent(windows[0]);
+
     renderer->InitGLEW();
 
     for (auto& wind : windows) {

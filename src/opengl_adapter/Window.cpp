@@ -24,23 +24,23 @@ Window::Window(Window&& window) noexcept {
     this->title = std::move(window.title);
 }
 
-Window::Window(const char* title, const Point& size, GLFWmonitor* monitor, Window* share) {
-    this->master_ctor(title, size.x, size.y, monitor, share);
+Window::Window(const char* title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+    this->master_ctor(title, size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(const char* title, Point&& size, GLFWmonitor* monitor, Window* share) {
-    this->master_ctor(title, std::move(size.x), std::move(size.y), monitor, share);
+Window::Window(const char* title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+    this->master_ctor(title, std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
-Window::Window(std::string& title, const Point& size, GLFWmonitor* monitor, Window* share) {
-    this->master_ctor(title.c_str(), size.x, size.y, monitor, share);
+Window::Window(std::string& title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+    this->master_ctor(title.c_str(), size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(std::string& title, Point&& size, GLFWmonitor* monitor, Window* share) {
-    this->master_ctor(title.c_str(), std::move(size.x), std::move(size.y), monitor, share);
+Window::Window(std::string& title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+    this->master_ctor(title.c_str(), std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
-void Window::master_ctor(const char* title, coord_t height, coord_t width, GLFWmonitor* monitor, Window* share) {
+void Window::master_ctor(const char* title, coord_t height, coord_t width, bool resizable, GLFWmonitor* monitor, Window* share) {
     this->handle = glfwCreateWindow(width, height, title, monitor, (share == nullptr ? nullptr : share->handle));
 
     if (!this->handle)
@@ -48,6 +48,7 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, GLFWm
 
     glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
     glfwSetWindowSizeCallback(this->handle, &resize);
+    glfwWindowHint(GLFW_RESIZABLE, resizable);
 }
 
 // Dtor.
