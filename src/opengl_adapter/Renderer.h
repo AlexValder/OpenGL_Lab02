@@ -50,6 +50,9 @@ namespace LAM {
         void RenderTriangles(GLfloat vertices[], GLfloat colors[]) override {
             glClear(GL_COLOR_BUFFER_BIT);
 
+//            glEnable(GL_DEPTH_TEST);
+
+//            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
 
             glEnableClientState(GL_VERTEX_ARRAY);
             glEnableClientState(GL_COLOR_ARRAY);
@@ -57,8 +60,14 @@ namespace LAM {
             glVertexPointer(3, GL_FLOAT, 0, vertices);
             glColorPointer(3, GL_FLOAT, 0, colors);
 
-            glDrawArrays(GL_QUADS, 0, 8);
 
+            glPushMatrix(); // push the matrix
+            double angle = glfwGetTime() * 50.0f;
+            glRotatef(angle, 1.0, 1.0, 1.0); //apply transformation
+
+            glDrawArrays(GL_TRIANGLES, 0, 8);
+
+            glPopMatrix();
 
             glDisableClientState(GL_COLOR_ARRAY);
             glDisableClientState(GL_VERTEX_ARRAY);
