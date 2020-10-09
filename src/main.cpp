@@ -5,6 +5,7 @@
 #include "opengl_adapter/Window.h"
 
 #include "objects_to_draw/Cube.h"
+#include "objects_to_draw/Squares.h"
 
 // to print a Vec2 as (x, y).
 template <class T>
@@ -37,7 +38,7 @@ int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
 
-    LAM::Color colors[] = { LAM::Color::BLUE, LAM::Color::GREEN, LAM::Color::PURPLE, LAM::Color::BLACK };
+    LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::BLACK, LAM::Color::BLACK, LAM::Color::BLACK };
     LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
 
     LAM::RendererBase* renderer = new LAM::MainRenderer;
@@ -63,8 +64,8 @@ int main(int argc, const char** argv) {
     renderer->InitGLEW();
 
     for (auto& wind : windows) {
-		renderer->MakeContextCurrent(wind);
-        LAM::Cube::Init();
+        renderer->MakeContextCurrent(wind);
+//        LAM::Cube::Init();
     }
 
     uint counter{};
@@ -75,7 +76,8 @@ int main(int argc, const char** argv) {
         for (size_t i = 0; i < windows.size(); ++i) {
             renderer->SetClearColor(colors[i]);
             renderer->MakeContextCurrent(windows[i]);
-            renderer->RenderVBO(LAM::Cube::VAO, LAM::Cube::TYPE, LAM::Cube::vertices.size());
+//            renderer->RenderVBO(LAM::Cube::VAO, LAM::Cube::TYPE, LAM::Cube::vertices.size());
+            renderer->RenderTriangles(LAM::Squares::vertices, LAM::Squares::colors);
             renderer->SwapBuffers(windows[i]);
             renderer->PollEvents();
         }
@@ -87,7 +89,7 @@ int main(int argc, const char** argv) {
 
     }
 
-    LAM::Cube::Deinit();
+//    LAM::Cube::Deinit();
 
     delete renderer;
     return 0;

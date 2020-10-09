@@ -48,27 +48,40 @@ namespace LAM {
         }
 
         void RenderTriangles(GLfloat vertices[], GLfloat colors[]) override {
-            ;
+            glClear(GL_COLOR_BUFFER_BIT);
+
+
+            glEnableClientState(GL_VERTEX_ARRAY);
+            glEnableClientState(GL_COLOR_ARRAY);
+
+            glVertexPointer(3, GL_FLOAT, 0, vertices);
+            glColorPointer(3, GL_FLOAT, 0, colors);
+
+            glDrawArrays(GL_QUADS, 0, 8);
+
+
+            glDisableClientState(GL_COLOR_ARRAY);
+            glDisableClientState(GL_VERTEX_ARRAY);
         }
 
         void RenderVBO(GLuint VAO, GLenum TYPE, int size) override {
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
 
-			glEnable(GL_DEPTH_TEST);
+            glEnable(GL_DEPTH_TEST);
 
-			glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
 
- 
-			glPushMatrix(); // push the matrix
-			double angle = glfwGetTime() * 50.0f;
-			glRotatef(angle, 1.0, 1.0, 0.0); //apply transformation
-            
+
+            glPushMatrix(); // push the matrix
+            double angle = glfwGetTime() * 50.0f;
+            glRotatef(angle, 1.0, 1.0, 0.0); //apply transformation
+
             glLineWidth(5);
             glDrawArrays(TYPE, 0, size);
 
-			glPopMatrix();
-            
+            glPopMatrix();
+
             glDisableVertexAttribArray(0);
         }
 
