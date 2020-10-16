@@ -5,11 +5,12 @@
 #include <GL/glew.h>
 // GLFW
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+//#include <glm/glm.hpp>
 
 #include <string>
 #include <type_traits>
 #include <memory>
+#include <cassert>
 
 namespace LAM {
 
@@ -69,7 +70,7 @@ namespace LAM {
             return *this;
         }
 
-        Vec2& operator*=(int k) noexcept {
+        Vec2& operator*=(double k) noexcept {
             this->x *= k;
             this->y *= k;
             return *this;
@@ -101,7 +102,7 @@ namespace LAM {
     }
 
     template <class T>
-    Vec2<T> operator*(int k, const Vec2<T>& vec) {
+    Vec2<T> operator*(double k, const Vec2<T>& vec) {
         return vec*k;
     }
 
@@ -123,11 +124,81 @@ namespace LAM {
         return vec1.dot_product(vec2);
     }
 
-    struct Color final {
-        uint8_t A, R, G, B;
+    /**
+     * Basic struct made to represent three-dimentional vector or a point.
+     */
+    template <class T = uint32_t,
+              typename = typename std::enable_if<LAM::is_number<T>::value>>
+    struct Vec3 {
+        T x, y, z;
 
-        constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, float Alpha)
-            : A(static_cast<uint8_t>(255*Alpha)), R(Red), G(Green), B(Blue) {}
+        constexpr Vec3(T x = {}, T y = {}, T z = {}) : x(x), y(y) {}
+        constexpr Vec3(const Vec3& vec) : x(vec.x), y(vec.y) {}
+        constexpr Vec3(Vec3&& vec) noexcept : x(std::move(vec.x)), y(std::move(vec.y)), z(std::move(vec.z)) {}
+
+        Vec3 operator*(double k) const noexcept {
+            return Vec3(this->x * k, this->y * k, this->z * k);
+        }
+
+        T dot_product(const Vec3& vec) const noexcept {
+            return this->x * vec.x + this->y * vec.y + this->z * vec.z;
+        }
+
+        // These DO modify the object.
+        Vec3& operator+=(const Vec3& vec) noexcept {
+            this->x += vec.x;
+            this->y += vec.y;
+            this->z += vec.z;
+            return *this;
+        }
+
+        Vec3& operator-=(const Vec3& vec) noexcept {
+            this->x -= vec.x;
+            this->y -= vec.y;
+            this->z -= vec.z;
+            return *this;
+        }
+
+        Vec3& operator*=(double k) noexcept {
+            this->x *= k;
+            this->y *= k;
+            this->z *= k;
+            return *this;
+        }
+
+        Vec3& operator=(const Vec3& vec) noexcept {
+            this->x = vec.x;
+            this->y = vec.y;
+            this->z = vec.z;
+            return *this;
+        }
+
+        Vec3& operator=(Vec3&& vec) noexcept {
+            this->x = std::move(vec.x);
+            this->y = std::move(vec.y);
+            this->z = std::move(vec.z);
+            return *this;
+        }
+
+        // Equality.
+        bool operator==(const Vec3& vec) const noexcept { return (this->x == vec.x)&&(this->y == vec.y)&&(this->z == vec.z); }
+        bool operator!=(const Vec3& vec) const noexcept { return !(*this == vec); }
+    };
+
+    /**
+     * Dot product, by a definition: A * B = a.x * b.x + a.y * b.y + a.z * b.z
+     */
+    template <class T>
+    T dot_product(const Vec3<T>& vec1, const Vec3<T>& vec2) noexcept {
+        return vec1.dot_product(vec2);
+    }
+
+
+    struct Color final {
+        float A, R, G, B;
+
+        constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, uint8_t Alpha)
+            : A(Alpha/255.f), R(Red/255.f), G(Green/255.f), B(Blue/255.f) {}
 
         static const Color RED, GREEN, BLUE,
                             CYAN, MAGENTA, YELLOW,

@@ -13,7 +13,7 @@ namespace LAM {
     class Window {
     public:
 
-        friend class MainRenderer;
+        friend class OldRenderer;
         friend class RendererBase;
 
         using coord_t = int;
