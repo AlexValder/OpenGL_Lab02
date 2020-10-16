@@ -15,12 +15,12 @@ namespace LAM {
         void PollEvents() { glfwPollEvents(); }
         virtual ~RendererBase() {}
 
-        bool isGlfwInit() const noexcept;
-        bool isGlewInit() const noexcept;
+        inline static bool isGlfwInit() noexcept;
+        inline static bool isGlewInit() noexcept;
 
     protected:
-        void setGlfwInit(bool) noexcept;
-        void setGlewInit(bool) noexcept;
+        inline static void setGlfwInit(bool) noexcept;
+        inline static void setGlewInit(bool) noexcept;
 
     private:
         static bool _isGlfwInit;

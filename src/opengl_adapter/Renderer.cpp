@@ -7,11 +7,11 @@ using namespace LAM;
 bool RendererBase::_isGlfwInit = false;
 bool RendererBase::_isGlewInit = false;
 
-bool RendererBase::isGlfwInit() const noexcept {
+bool RendererBase::isGlfwInit() noexcept {
     return _isGlfwInit;
 }
 
-bool RendererBase::isGlewInit() const noexcept {
+bool RendererBase::isGlewInit() noexcept {
     return _isGlewInit;
 }
 
@@ -39,21 +39,31 @@ void OldRenderer::InitGLFW(int major_version, int minor_version) {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
+
+    setGlfwInit(true);
 }
 
 void OldRenderer::InitGLEW() {
+    if (isGlewInit()) return;
+
     glewExperimental = true;
     if(glewInit() != GLEW_OK) {
         std::cerr << "Failed to initialize GLEW" << std::endl;
         exit(-1);
     }
+
+    setGlewInit(true);
 }
 
 void OldRenderer::SwapBuffers(Window& w) {
+    assert(isGlfwInit() && isGlewInit());
+
     glfwSwapBuffers(w.handle);
 }
 
 void OldRenderer::RenderTriangles(GLfloat*, GLfloat*) {
+    assert(isGlfwInit() && isGlewInit());
+
     glClear(GL_COLOR_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glLoadIdentity();
@@ -72,6 +82,8 @@ void OldRenderer::RenderTriangles(GLfloat*, GLfloat*) {
 }
 
 void OldRenderer::RenderVBO(GLuint VAO, GLenum TYPE, int size) {
+    assert(isGlfwInit() && isGlewInit());
+
     glBindVertexArray(VAO);
     glEnableVertexAttribArray(0);
 
@@ -93,6 +105,8 @@ void OldRenderer::RenderVBO(GLuint VAO, GLenum TYPE, int size) {
 }
 
 void OldRenderer::SetClearColor(Color color) {
+    assert(isGlfwInit() && isGlewInit());
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(color.R, color.G, color.B, color.A/255.f);
 }
