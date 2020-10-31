@@ -3,7 +3,7 @@
 #include "../opengl_adapter/shared.h"
 
 namespace LAM {
-    namespace Squares {
+    namespace Triangle {
         constexpr static std::array<GLfloat, 18> vertices = {
                 // positions         // colors
                  0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right

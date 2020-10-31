@@ -4,8 +4,9 @@
 #include "opengl_adapter/Renderer.h"
 #include "opengl_adapter/Window.h"
 #include "opengl_adapter/Shader.h"
+#include "opengl_adapter/Camera.h"
 
-#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 0
+#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
 #define USE_OLD_RENDERER 0
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
@@ -39,7 +40,7 @@ void move_forward(T vec[], size_t size) {
 }
 
 // how many windows will be opened?
-constexpr size_t num = 1;
+#define WIN_COUNT 1
 
 int main(int argc, const char** argv) {
 
@@ -57,24 +58,28 @@ int main(int argc, const char** argv) {
         renderer->InitGLFW(3, 3);
     #endif
 
-        assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
-        assert(num <= sizeof(pos)/sizeof(pos[0]));
+        assert(0 < WIN_COUNT && WIN_COUNT <= sizeof(colors)/sizeof(colors[0]));
+        assert(WIN_COUNT <= sizeof(pos)/sizeof(pos[0]));
 
-        std::array<LAM::Window, num> windows = {
-            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700}, false, glfwGetPrimaryMonitor())/*,
-            LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475}),
-            LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200})*/
+        std::array<LAM::Window, WIN_COUNT> windows = {
+            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})
+    #if WIN_COUNT > 1
+            ,
+            LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475})
+    #endif
+    #if WIN_COUNT > 2
+            ,
+            LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200})
+    #endif
         };
 
-        assert(num == windows.size());
-
         renderer->MakeContextCurrent(windows[0]);
-
         renderer->InitGLEW();
 
         std::cout << "We're running on: " << glGetString(GL_VERSION) << std::endl;
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE && USE_OLD_RENDERER // Cube with old renderer
+
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
             LAM::Cube::Init();
@@ -100,7 +105,9 @@ int main(int argc, const char** argv) {
 
             glDisableVertexAttribArray(0);
         };
+
 #elif USE_OLD_RENDERER // Triangle with old renderer
+
         auto action = [](){
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
@@ -117,47 +124,52 @@ int main(int argc, const char** argv) {
             glVertex3f(0.f, .6f, 0.f);
             glEnd();
         };
+
 #elif DRAW_CUBE_INSTEAD_OF_A_TRIANGLE // Cube with "modern" renderer
+
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
             LAM::Cube::Init();
         }
 
-        LAM::Shader shader("resources/cube_vertex_shader.vert", "resources/cube_fragment_shader.frag");
+        auto action = [](){
+            static LAM::Camera cam;
 
-        shader.Use();
-
-        auto action = [&](){
+            static LAM::Shader shader("resources/cube_vertex_shader.vert", "resources/cube_fragment_shader.frag");
             const static GLuint VAO = LAM::Cube::VAO;
             const static GLenum TYPE = LAM::Cube::TYPE;
             const static size_t size = LAM::Cube::vertices.size();
 
             const static auto mat4e = glm::mat4(1.f);
 
-            shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
-            shader.setMat4("view", mat4e);
+            shader.Use();
+
+            auto view = mat4e;
+
+            shader.setMat4("model", mat4e);// glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
+            shader.setMat4("view", view);
             shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
             glBindVertexArray(VAO);
             glDrawArrays(TYPE, 0, size);
         };
+
 #else // Triangle with "modern" renderer
 
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
-            LAM::Squares::Init();
+            LAM::Triangle::Init();
         }
 
-        LAM::Shader shader("resources/triangle_vertex_shader.vert", "resources/triangle_fragment_shader.frag");
-
-        shader.Use();
-
         auto action = [&](){
-            const static GLuint VAO = LAM::Squares::VAO;
-            const static GLenum TYPE = LAM::Squares::TYPE;
+            static LAM::Shader shader("resources/triangle_vertex_shader.vert", "resources/triangle_fragment_shader.frag");
+            const static GLuint VAO = LAM::Triangle::VAO;
+            const static GLenum TYPE = LAM::Triangle::TYPE;
 
             const static auto mat4e = glm::mat4(1.f);
+
+            shader.Use();
 
             shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
             shader.setMat4("view", mat4e);
@@ -167,6 +179,7 @@ int main(int argc, const char** argv) {
             glDrawArrays(TYPE, 0, 3);
 
         };
+
 #endif
 
         uint counter{};
@@ -198,7 +211,7 @@ int main(int argc, const char** argv) {
 #elif !USE_OLD_RENDERER && !DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
-            LAM::Squares::Deinit();
+            LAM::Triangle::Deinit();
         }
 #endif
         delete renderer;
