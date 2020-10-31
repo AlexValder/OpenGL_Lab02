@@ -33,10 +33,6 @@ target_compile_options(${PROJECT_NAME} PUBLIC -Wall)
 # This allows to include files relative to the root of the src directory with a <> pair
 target_include_directories(${PROJECT_NAME} PUBLIC src/main)
 
-# This copies all resource files in the build directory.
-# We need this, because we want to work with paths relative to the executable.
-configure_file(${data} DESTINATION COPYONLY)
-
 ###############################################################################
 ## dependencies ###############################################################
 ###############################################################################
@@ -79,6 +75,8 @@ install(TARGETS ${PROJECT_NAME} DESTINATION share/${PROJECT_NAME})
 # resources in the build directory, but here we tell cmake that we want it
 # in the package.
 install(DIRECTORY resources DESTINATION share/${PROJECT_NAME})
+
+file(COPY ${data} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/resources)
 
 # Now comes everything we need, to create a package
 # there are a lot more variables you can set, and some

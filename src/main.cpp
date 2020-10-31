@@ -123,24 +123,29 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        auto action = [](){
+        LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+
+        auto action = [&](){
             const static GLuint VAO = LAM::Cube::VAO;
             const static GLenum TYPE = LAM::Cube::TYPE;
             const static size_t size = LAM::Cube::vertices.size();
+            constexpr float WIDTH = 500, HEIGHT = 500;
 
-            static LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+            auto coords = glm::vec3(1.f);
 
             shader.Use();
 
-            int vertexColorLocation = glGetUniformLocation(shader.ID(), "ourColor");
-            glUseProgram(shader.ID());
-            glUniform4f(vertexColorLocation, LAM::Color::GREEN.R, LAM::Color::GREEN.G, LAM::Color::GREEN.B, LAM::Color::GREEN.A);
+            static auto mat4e = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+
+            auto model = glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f));
+
+            shader.setMat4("model", model);
+            shader.setMat4("view", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
+            shader.setMat4("projection", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
+            shader.setVec4("ourColor", 0.f, abs(sin(glfwGetTime() * 2.f)), 0.f, 1.f);
 
             glBindVertexArray(VAO);
-            glEnableVertexAttribArray(0);
-            glDrawArrays(TYPE, 0, size);
-
-            glDisableVertexAttribArray(0);
+            glDrawArrays(GL_TRIANGLES, 0, size);
         };
 #else // Triangle with "modern" renderer
         auto action = [](){
