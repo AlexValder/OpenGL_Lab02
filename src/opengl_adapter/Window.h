@@ -13,8 +13,9 @@ namespace LAM {
     class Window {
     public:
 
-        friend class OldRenderer;
         friend class RendererBase;
+        friend class OldRenderer;
+        friend class MainRenderer;
 
         using coord_t = int;
         using Point = Vec2<coord_t>;
@@ -61,11 +62,14 @@ namespace LAM {
         void Close();
 
         GLFWwindow* GetHandle();
+        GLFWmonitor* GetMonitor();
 
     private:
         GLFWwindow* handle;
+        GLFWmonitor* monitor;
         std::string title;
 
         void master_ctor(const char*, coord_t, coord_t, bool, GLFWmonitor*, Window*);
     };
+
 }

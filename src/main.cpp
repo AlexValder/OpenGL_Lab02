@@ -3,8 +3,10 @@
 
 #include "opengl_adapter/Renderer.h"
 #include "opengl_adapter/Window.h"
+#include "opengl_adapter/Shader.h"
 
 #define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
+#define USE_OLD_RENDERER 0
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
 #include "objects_to_draw/Cube.h"
@@ -37,71 +39,152 @@ void move_forward(T vec[], size_t size) {
 }
 
 // how many windows will be opened?
-constexpr size_t num = 3;
+constexpr size_t num = 1;
 
 int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
+    try {
 
-    LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color(0, 0, 50, 255), LAM::Color(0, 50, 0, 255), LAM::Color(50, 0, 0, 255) };
-    LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
+        LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color(0, 0, 50, 255), LAM::Color(0, 50, 0, 255), LAM::Color(50, 0, 0, 255) };
+        LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
+    #if USE_OLD_RENDERER
+        LAM::RendererBase* renderer = new LAM::OldRenderer;
+        renderer->InitGLFW(2, 1);
+    #else
+        LAM::RendererBase* renderer = new LAM::MainRenderer;
+        renderer->InitGLFW(3, 1);
+    #endif
 
-    LAM::RendererBase* renderer = new LAM::OldRenderer;
-    renderer->InitGLFW(2, 1);
+        assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
+        assert(num <= sizeof(pos)/sizeof(pos[0]));
 
-    assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
-    assert(num <= sizeof(pos)/sizeof(pos[0]));
+        std::array<LAM::Window, num> windows = {
+            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})/*,
+            LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475}),
+            LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200})*/
+        };
 
-    std::array<LAM::Window, num> windows = {
-        LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700}, false),
-        LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475}, false),
-        LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200}, false)
-    };
+        assert(num == windows.size());
 
-    for (size_t i = 0; i < windows.size(); ++i) {
-        windows[i].SetPos(pos[i]);
-    }
+        renderer->MakeContextCurrent(windows[0]);
 
-    assert(num == windows.size());
+        renderer->InitGLEW();
 
-    renderer->MakeContextCurrent(windows[0]);
+        std::cout << "We're running on: " << glGetString(GL_VERSION) << std::endl;
 
-    renderer->InitGLEW();
-
-#if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
-    for (auto& wind : windows) {
-        renderer->MakeContextCurrent(wind);
-        LAM::Cube::Init();
-    }
-#endif
-
-    uint counter{};
-
-    while(AreAllOpen(windows)) {
-        ++counter;
-
-        for (size_t i = 0; i < windows.size(); ++i) {
-            renderer->SetClearColor(colors[i]);
-            renderer->MakeContextCurrent(windows[i]);
-#if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
-            renderer->RenderVBO(LAM::Cube::VAO, LAM::Cube::TYPE, LAM::Cube::vertices.size());
-#else
-            renderer->RenderTriangles(LAM::Squares::vertices, LAM::Squares::colors);
-#endif
-            renderer->SwapBuffers(windows[i]);
-            renderer->PollEvents();
+#if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE && USE_OLD_RENDERER // Cube with old renderer
+        for (auto& win : windows) {
+            renderer->MakeContextCurrent(win);
+            LAM::Cube::Init();
         }
 
-        if (counter == 100) {
-            move_forward(colors, sizeof(colors)/sizeof(colors[0]));
-            counter = 0;
+        auto action = [](){
+            const static GLuint VAO = LAM::Cube::VAO;
+            const static GLenum TYPE = LAM::Cube::TYPE;
+            const static size_t size = LAM::Cube::vertices.size();
+            glBindVertexArray(VAO);
+            glEnableVertexAttribArray(0);
+
+            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+
+            glPushMatrix(); // push the matrix
+            double angle = glfwGetTime() * 50.0f;
+            glRotatef(angle, 0.5, 1.5, 0.5); //apply transformation
+
+            glLineWidth(5);
+            glDrawArrays(TYPE, 0, size);
+
+            glPopMatrix();
+
+            glDisableVertexAttribArray(0);
+        };
+    #elif USE_OLD_RENDERER // Triangle with old renderer
+        auto action = [](){
+            glClear(GL_COLOR_BUFFER_BIT);
+            glEnable(GL_DEPTH_TEST);
+            glLoadIdentity();
+
+            glRotatef(static_cast<float>(glfwGetTime()) * 50.f, 1.f, 1.f, 1.f);
+
+            glBegin(GL_TRIANGLES);
+            glColor3f(1.f, 0.f, 0.f);
+            glVertex3f(-.6f, -.4f, 0.f);
+            glColor3f(0.f, 1.f, 0.f);
+            glVertex3f(.6f, -.4f, 0.f);
+            glColor3f(0.f, 0.f, 1.f);
+            glVertex3f(0.f, .6f, 0.f);
+            glEnd();
+        };
+    #elif DRAW_CUBE_INSTEAD_OF_A_TRIANGLE // Cube with "modern" renderer
+        for (auto& win : windows) {
+            renderer->MakeContextCurrent(win);
+            LAM::Cube::Init();
         }
 
-    }
+        LAM::Shader shader("resources/vertex_shader.shader", "resources/fragment_shader.shader");
 
-#if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
-    LAM::Cube::Deinit();
+        std::cout << "SHADER.ID = " << shader.ID() << std::endl;
+
+        auto action = [](){
+            const static GLuint VAO = LAM::Cube::VAO;
+            const static GLenum TYPE = LAM::Cube::TYPE;
+            const static size_t size = LAM::Cube::vertices.size();
+            glBindVertexArray(VAO);
+            glEnableVertexAttribArray(0);
+
+            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+
+            glPushMatrix(); // push the matrix
+            double angle = glfwGetTime() * 50.0f;
+            glRotatef(angle, 0.5, 1.5, 0.5); //apply transformation
+
+            glLineWidth(5);
+            glDrawArrays(TYPE, 0, size);
+
+            glPopMatrix();
+
+            glDisableVertexAttribArray(0);
+        };
+#else // Triangle with "modern" renderer
+        auto action = [](){
+
+        };
 #endif
-    delete renderer;
+
+        uint counter{};
+
+        while(AreAllOpen(windows)) {
+            ++counter;
+
+            for (size_t i = 0; i < windows.size(); ++i) {
+                renderer->SetClearColor(colors[i]);
+                renderer->MakeContextCurrent(windows[i]);
+
+                renderer->Render(action);
+
+                renderer->SwapBuffers(windows[i]);
+                renderer->PollEvents();
+            }
+
+            if (counter == 100) {
+                move_forward(colors, sizeof(colors)/sizeof(colors[0]));
+                counter = 0;
+            }
+
+        }
+#if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
+        for (auto& win : windows) {
+            renderer->MakeContextCurrent(win);
+            LAM::Cube::Deinit();
+        }
+#endif
+        delete renderer;
+    }
+    catch (std::exception& ex) {
+
+        std::cout << ex.what() << std::endl;
+        return -1;
+    }
     return 0;
 }

@@ -5,7 +5,10 @@
 #include <GL/glew.h>
 // GLFW
 #include <GLFW/glfw3.h>
-//#include <glm/glm.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include "stb_image.h"
 
 #include <string>
 #include <type_traits>
@@ -13,6 +16,11 @@
 #include <cassert>
 
 namespace LAM {
+
+    /**
+     * Types
+     */
+    typedef  void (*ActionFunc)();
 
     /**
      * Dedicated namespace for constants of different types for

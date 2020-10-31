@@ -53,26 +53,24 @@ namespace LAM {
         static constexpr GraphPrimitives TYPE = GraphPrimitives::Triangles;
 
         static void Init() {
+            glGenVertexArrays(1, &VAO);
             glGenBuffers(1, &VBO);
+            glBindVertexArray(VAO);
+
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
             glBufferData(
               GL_ARRAY_BUFFER, vertices.size() * sizeof(float),
               vertices.data(), GL_STATIC_DRAW
             );
 
-			glVertexPointer(3, GL_FLOAT, 0, nullptr);
-
-            glGenVertexArrays(1, &VAO);
-
-            glBindVertexArray(VAO);
-            glBindBuffer(GL_ARRAY_BUFFER, Cube::VBO);
-               
-               
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
 
-            glBindBuffer(GL_ARRAY_BUFFER, 0); // unbind VBO
-            glBindVertexArray(0); // unbind VAO
+            glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof (float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
+
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindVertexArray(0);
         }
 
         static void Deinit() {

@@ -5,14 +5,8 @@
 using namespace LAM;
 
 void resize(GLFWwindow * _, int width, int height) {
-    double ratio = width/static_cast<double>(height);
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-ratio, ratio, -1., 1., 1., -1.);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glfwSetWindowAspectRatio(_, width, height);
+    glViewport(1.f * height / (1.f*width), 0, height, height);
 }
 
 // Ctors.
@@ -28,27 +22,49 @@ Window::Window(const char* title, const Point& size, bool resizable, GLFWmonitor
     this->master_ctor(title, size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(const char* title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+Window::Window(const char* title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
     this->master_ctor(title, std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
-Window::Window(std::string& title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+Window::Window(std::string& title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
     this->master_ctor(title.c_str(), size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(std::string& title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+Window::Window(std::string& title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
     this->master_ctor(title.c_str(), std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
 void Window::master_ctor(const char* title, coord_t height, coord_t width, bool resizable, GLFWmonitor* monitor, Window* share) {
-    this->handle = glfwCreateWindow(width, height, title, monitor, (share == nullptr ? nullptr : share->handle));
+    if (monitor != nullptr) {
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-    if (!this->handle)
-        throw WindowException("Failed to create a window.");
+        glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+        glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+        glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+        glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
-    glfwSetWindowSizeCallback(this->handle, &resize);
-    glfwWindowHint(GLFW_RESIZABLE, resizable);
+        this->handle = glfwCreateWindow(mode->height, mode->height, title, nullptr, nullptr);
+
+        if (!this->handle) {
+            throw WindowException("Couldn't create a window");
+        }
+
+        glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
+        glfwSetWindowSizeCallback(this->handle, &resize);
+
+        glfwSetWindowMonitor(this->handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+    }
+    else {
+        this->handle = glfwCreateWindow(width, height, title, monitor, (share == nullptr ? nullptr : share->handle));
+
+        if (!this->handle)
+            throw WindowException("Failed to create a window.");
+
+//        glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
+//        glfwSetWindowSizeCallback(this->handle, &resize);
+//        glfwWindowHint(GLFW_RESIZABLE, resizable);
+    }
 }
 
 // Dtor.
@@ -126,6 +142,10 @@ Window::Point Window::GetPos() const {
 
 GLFWwindow* Window::GetHandle() {
     return this->handle;
+}
+
+GLFWmonitor* Window::GetMonitor() {
+    return this->monitor;
 }
 
 void Window::Close() {
