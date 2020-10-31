@@ -140,15 +140,21 @@ int main(int argc, const char** argv) {
             auto model = glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f));
 
             shader.setMat4("model", model);
-            shader.setMat4("view", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
-            shader.setMat4("projection", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
+            shader.setMat4("view", mat4e);
+            shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, size);
         };
 #else // Triangle with "modern" renderer
-        auto action = [](){
+
+        LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+
+        auto action = [&](){
+            const static auto vertices = LAM::Squares::vertices;
+            const static auto colors = LAM::Squares::colors;
+
 
         };
 #endif
