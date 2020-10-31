@@ -135,14 +135,14 @@ int main(int argc, const char** argv) {
 
             shader.Use();
 
-            static auto mat4e = glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+            static auto mat4e = glm::mat4(1.f);
 
             auto model = glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f));
 
             shader.setMat4("model", model);
             shader.setMat4("view", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
             shader.setMat4("projection", glm::mat4(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1));
-            shader.setVec4("ourColor", 0.f, abs(sin(glfwGetTime() * 2.f)), 0.f, 1.f);
+            shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, size);
