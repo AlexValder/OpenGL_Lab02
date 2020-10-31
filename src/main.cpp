@@ -123,39 +123,42 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+        LAM::Shader shader("resources/cube_vertex_shader.vert", "resources/cube_fragment_shader.frag");
+
+        shader.Use();
 
         auto action = [&](){
             const static GLuint VAO = LAM::Cube::VAO;
             const static GLenum TYPE = LAM::Cube::TYPE;
             const static size_t size = LAM::Cube::vertices.size();
-            constexpr float WIDTH = 500, HEIGHT = 500;
 
-            auto coords = glm::vec3(1.f);
+            const static auto mat4e = glm::mat4(1.f);
 
-            shader.Use();
-
-            static auto mat4e = glm::mat4(1.f);
-
-            auto model = glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f));
-
-            shader.setMat4("model", model);
+            shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
             shader.setMat4("view", mat4e);
             shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, size);
+            glDrawArrays(TYPE, 0, size);
         };
 #else // Triangle with "modern" renderer
 
-        LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+        LAM::Shader shader("resources/triangle_vertex_shader.vert", "resources/triangle_fragment_shader.frag");
+
+        shader.Use();
 
         auto action = [&](){
             const static auto vertices = LAM::Squares::vertices;
-            const static auto colors = LAM::Squares::colors;
+            static auto mat4e = glm::mat4(1.f);
 
 
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+            // color attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+            glEnableVertexAttribArray(1);
         };
 #endif
 

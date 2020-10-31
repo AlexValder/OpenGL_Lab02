@@ -4,28 +4,22 @@
 
 namespace LAM {
     namespace Squares {
-        GLfloat vertices[] = {
-             0.,  0.,  0.,
-             1.,  0.,  0.,
-             1.,  1.,  0.,
-             0.,  1.,  0.,
+        static GLfloat vertices[] = {
+                // positions         // colors
+                 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+                -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+                 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
+            };
 
-             0.,  0.,  0.,
-             0.,  1.,  0.,
-            -1.,  1.,  0.,
-            -1.,  0.,  0.
-        };
+        static GLuint VBO, VAO;
 
-        GLfloat colors[] = {
-            255, 0, 0,
-            255, 0, 0,
-            255, 0, 0,
-            255, 0, 0,
+        static void Init() {
+            glGenVertexArrays(1, &VAO);
+            glGenBuffers(1, &VBO);
+            glBindVertexArray(VAO);
 
-            0, 0, 255,
-            0, 0, 255,
-            0, 0, 255,
-            0, 0, 255
-        };
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        }
     }
 }
