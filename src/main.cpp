@@ -5,7 +5,7 @@
 #include "opengl_adapter/Window.h"
 #include "opengl_adapter/Shader.h"
 
-#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
+#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 0
 #define USE_OLD_RENDERER 0
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
@@ -144,21 +144,28 @@ int main(int argc, const char** argv) {
         };
 #else // Triangle with "modern" renderer
 
+        for (auto& win : windows) {
+            renderer->MakeContextCurrent(win);
+            LAM::Squares::Init();
+        }
+
         LAM::Shader shader("resources/triangle_vertex_shader.vert", "resources/triangle_fragment_shader.frag");
 
         shader.Use();
 
         auto action = [&](){
-            const static auto vertices = LAM::Squares::vertices;
-            static auto mat4e = glm::mat4(1.f);
+            const static GLuint VAO = LAM::Squares::VAO;
+            const static GLenum TYPE = LAM::Squares::TYPE;
 
+            const static auto mat4e = glm::mat4(1.f);
 
-            // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-            glEnableVertexAttribArray(0);
-            // color attribute
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-            glEnableVertexAttribArray(1);
+            shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
+            shader.setMat4("view", mat4e);
+            shader.setMat4("projection", mat4e);
+
+            glBindVertexArray(VAO);
+            glDrawArrays(TYPE, 0, 3);
+
         };
 #endif
 
@@ -187,6 +194,11 @@ int main(int argc, const char** argv) {
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
             LAM::Cube::Deinit();
+        }
+#elif !USE_OLD_RENDERER && !DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
+        for (auto& win : windows) {
+            renderer->MakeContextCurrent(win);
+            LAM::Squares::Deinit();
         }
 #endif
         delete renderer;

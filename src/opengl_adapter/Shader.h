@@ -17,6 +17,10 @@ namespace LAM {
             glDeleteShader(fragment_shader);
         }
 
+        ~Shader() {
+            glDeleteProgram(this->_ID);
+        }
+
         void Use() const {
             glUseProgram(this->_ID);
         }
