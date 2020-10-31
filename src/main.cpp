@@ -46,7 +46,7 @@ int main(int argc, const char** argv) {
     std::cout << "Loban A., PA-18-2" << std::endl;
     try {
 
-        LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color(0, 0, 50, 255), LAM::Color(0, 50, 0, 255), LAM::Color(50, 0, 0, 255) };
+        LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::TEAL, LAM::Color::GRAY, LAM::Color::OLIVE };
         LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
 
     #if USE_OLD_RENDERER
@@ -54,7 +54,7 @@ int main(int argc, const char** argv) {
         renderer->InitGLFW(2, 1);
     #else
         LAM::RendererBase* renderer = new LAM::MainRenderer;
-        renderer->InitGLFW(3, 1);
+        renderer->InitGLFW(4, 0);
     #endif
 
         assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
@@ -87,7 +87,7 @@ int main(int argc, const char** argv) {
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
 
-            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+            glMatrixMode(GL_PROJECTION); //set the matrix to model view mode
 
             glPushMatrix(); // push the matrix
             double angle = glfwGetTime() * 50.0f;
@@ -100,7 +100,7 @@ int main(int argc, const char** argv) {
 
             glDisableVertexAttribArray(0);
         };
-    #elif USE_OLD_RENDERER // Triangle with old renderer
+#elif USE_OLD_RENDERER // Triangle with old renderer
         auto action = [](){
             glClear(GL_COLOR_BUFFER_BIT);
             glEnable(GL_DEPTH_TEST);
@@ -117,15 +117,13 @@ int main(int argc, const char** argv) {
             glVertex3f(0.f, .6f, 0.f);
             glEnd();
         };
-    #elif DRAW_CUBE_INSTEAD_OF_A_TRIANGLE // Cube with "modern" renderer
+#elif DRAW_CUBE_INSTEAD_OF_A_TRIANGLE // Cube with "modern" renderer
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
             LAM::Cube::Init();
         }
 
         LAM::Shader shader("resources/vertex_shader.shader", "resources/fragment_shader.shader");
-
-        std::cout << "SHADER.ID = " << shader.ID() << std::endl;
 
         auto action = [](){
             const static GLuint VAO = LAM::Cube::VAO;
@@ -134,7 +132,7 @@ int main(int argc, const char** argv) {
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
 
-            glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
+            glMatrixMode(GL_PROJECTION); //set the matrix to model view mode
 
             glPushMatrix(); // push the matrix
             double angle = glfwGetTime() * 50.0f;

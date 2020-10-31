@@ -4,9 +4,9 @@
 
 using namespace LAM;
 
-void resize(GLFWwindow * _, int width, int height) {
+static void resize(GLFWwindow * _, int width, int height) {
     glfwSetWindowAspectRatio(_, width, height);
-    glViewport(1.f * height / (1.f*width), 0, height, height);
+    glViewport( (width - height) /2.f, 0, height, height);
 }
 
 // Ctors.

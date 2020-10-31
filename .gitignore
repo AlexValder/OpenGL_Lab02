@@ -5,3 +5,5 @@ WindowsOpenGL
 *.cmake
 Makefile
 CMakeFiles/
+/out
+/.vs

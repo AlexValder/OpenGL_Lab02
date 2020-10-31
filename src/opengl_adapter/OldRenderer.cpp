@@ -7,7 +7,7 @@ void OldRenderer::InitGLFW(int major_version, int minor_version) {
     if (isGlfwInit()) return;
 
     assert(major_version >= 0 && minor_version >= 0);
-    assert(major_version <= 2 || (major_version == 2 && minor_version <= 1));
+    assert(major_version <= 2);
 
     if(!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
