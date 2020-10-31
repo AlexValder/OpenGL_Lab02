@@ -15,7 +15,9 @@ void MainRenderer::InitGLFW(int major_version, int minor_version) {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major_version);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor_version);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    if (!(major_version < 4 && minor_version <= 2))
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     setGlfwInit(true);
 }

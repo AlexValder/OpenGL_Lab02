@@ -48,6 +48,7 @@ int main(int argc, const char** argv) {
 
         LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color(0, 0, 50, 255), LAM::Color(0, 50, 0, 255), LAM::Color(50, 0, 0, 255) };
         LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
+
     #if USE_OLD_RENDERER
         LAM::RendererBase* renderer = new LAM::OldRenderer;
         renderer->InitGLFW(2, 1);

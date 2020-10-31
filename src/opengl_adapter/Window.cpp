@@ -46,6 +46,8 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
         this->handle = glfwCreateWindow(mode->height, mode->height, title, nullptr, nullptr);
 
         if (!this->handle) {
+            int err_code = glGetError();
+            std::cout << "ERROR CODE: " << err_code << std::endl;
             throw WindowException("Couldn't create a window");
         }
 
@@ -58,12 +60,15 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
     else {
         this->handle = glfwCreateWindow(width, height, title, monitor, (share == nullptr ? nullptr : share->handle));
 
-        if (!this->handle)
+        if (!this->handle) {
+            int err_code = glGetError();
+            std::cout << "ERROR CODE: " << err_code << std::endl;
             throw WindowException("Failed to create a window.");
+        }
 
-//        glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
-//        glfwSetWindowSizeCallback(this->handle, &resize);
-//        glfwWindowHint(GLFW_RESIZABLE, resizable);
+        glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
+        glfwSetWindowSizeCallback(this->handle, &resize);
+        glfwWindowHint(GLFW_RESIZABLE, resizable);
     }
 }
 
