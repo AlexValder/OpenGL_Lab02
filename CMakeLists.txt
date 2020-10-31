@@ -35,7 +35,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC src/main)
 
 # This copies all resource files in the build directory.
 # We need this, because we want to work with paths relative to the executable.
-file(COPY ${data} DESTINATION resources)
+configure_file(${data} DESTINATION COPYONLY)
 
 ###############################################################################
 ## dependencies ###############################################################

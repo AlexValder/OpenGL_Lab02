@@ -54,14 +54,14 @@ int main(int argc, const char** argv) {
         renderer->InitGLFW(2, 1);
     #else
         LAM::RendererBase* renderer = new LAM::MainRenderer;
-        renderer->InitGLFW(4, 0);
+        renderer->InitGLFW(3, 3);
     #endif
 
         assert(0 < num && num <= sizeof(colors)/sizeof(colors[0]));
         assert(num <= sizeof(pos)/sizeof(pos[0]));
 
         std::array<LAM::Window, num> windows = {
-            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})/*,
+            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700}, false, glfwGetPrimaryMonitor())/*,
             LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475}),
             LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200})*/
         };
@@ -123,25 +123,22 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        LAM::Shader shader("resources/vertex_shader.shader", "resources/fragment_shader.shader");
-
         auto action = [](){
             const static GLuint VAO = LAM::Cube::VAO;
             const static GLenum TYPE = LAM::Cube::TYPE;
             const static size_t size = LAM::Cube::vertices.size();
+
+            static LAM::Shader shader("resources/vertex_shader.vert", "resources/fragment_shader.frag");
+
+            shader.Use();
+
+            int vertexColorLocation = glGetUniformLocation(shader.ID(), "ourColor");
+            glUseProgram(shader.ID());
+            glUniform4f(vertexColorLocation, LAM::Color::GREEN.R, LAM::Color::GREEN.G, LAM::Color::GREEN.B, LAM::Color::GREEN.A);
+
             glBindVertexArray(VAO);
             glEnableVertexAttribArray(0);
-
-            glMatrixMode(GL_PROJECTION); //set the matrix to model view mode
-
-            glPushMatrix(); // push the matrix
-            double angle = glfwGetTime() * 50.0f;
-            glRotatef(angle, 0.5, 1.5, 0.5); //apply transformation
-
-            glLineWidth(5);
             glDrawArrays(TYPE, 0, size);
-
-            glPopMatrix();
 
             glDisableVertexAttribArray(0);
         };
