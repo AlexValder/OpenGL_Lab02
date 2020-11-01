@@ -6,8 +6,10 @@
 #include "opengl_adapter/Shader.h"
 #include "opengl_adapter/Camera.h"
 
-#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
+#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 0
 #define USE_OLD_RENDERER 0
+// how many windows will be opened?
+#define WIN_COUNT 3
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
 #include "objects_to_draw/Cube.h"
@@ -39,16 +41,12 @@ void move_forward(T vec[], size_t size) {
     }
 }
 
-// how many windows will be opened?
-#define WIN_COUNT 1
-
 int main(int argc, const char** argv) {
 
     std::cout << "Loban A., PA-18-2" << std::endl;
     try {
 
         LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::TEAL, LAM::Color::GRAY, LAM::Color::OLIVE };
-        LAM::Window::Point pos[] = { {0, 0}, {300, 300}, {500, 500} };
 
     #if USE_OLD_RENDERER
         LAM::RendererBase* renderer = new LAM::OldRenderer;
@@ -59,7 +57,7 @@ int main(int argc, const char** argv) {
     #endif
 
         assert(0 < WIN_COUNT && WIN_COUNT <= sizeof(colors)/sizeof(colors[0]));
-        assert(WIN_COUNT <= sizeof(pos)/sizeof(pos[0]));
+        //assert(WIN_COUNT <= sizeof(pos)/sizeof(pos[0]));
 
         std::array<LAM::Window, WIN_COUNT> windows = {
             LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})
@@ -146,7 +144,7 @@ int main(int argc, const char** argv) {
 
             auto view = mat4e;
 
-            shader.setMat4("model", mat4e);// glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
+            shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
             shader.setMat4("view", view);
             shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
