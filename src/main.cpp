@@ -2,10 +2,9 @@
 #include <array>
 
 #include "opengl_adapter/Renderer.h"
-#include "opengl_adapter/KeyController.h"
 #include "opengl_adapter/Window.h"
 #include "opengl_adapter/Shader.h"
-#include "opengl_adapter/Camera.h"
+#include "opengl_adapter/KeyController.h"
 
 #define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
 #define USE_OLD_RENDERER 0
@@ -42,29 +41,31 @@ void move_forward(T vec[], size_t size) {
     }
 }
 
+void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode);
 void processInput(GLFWwindow *, LAM::Camera&, float);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
+static float deltaTime{};
 
 int main(int argc, const char** argv) {
 
     static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
 
-    LAM::KeyController::AddAction(LAM::Keys::A, [](LAM::Camera& cam, float delta){
+    LAM::KeyController::AddAction(LAM::Keys::A, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::LEFT, delta);
     });
 
-    LAM::KeyController::AddAction(LAM::Keys::D, [](LAM::Camera& cam, float delta){
+    LAM::KeyController::AddAction(LAM::Keys::D, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::RIGHT, delta);
     });
 
-    LAM::KeyController::AddAction(LAM::Keys::W, [](LAM::Camera& cam, float delta){
+    LAM::KeyController::AddAction(LAM::Keys::W, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::FORWARD, delta);
     });
 
-    LAM::KeyController::AddAction(LAM::Keys::S, [](LAM::Camera& cam, float delta){
+    LAM::KeyController::AddAction(LAM::Keys::S, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::BACKWARD, delta);
     });
 
@@ -157,6 +158,7 @@ int main(int argc, const char** argv) {
 
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
+            glfwSetKeyCallback(win.GetHandle(), keyCallback);
 //            glfwSetCursorPosCallback(win.GetHandle(), mouse_callback);
 //            glfwSetScrollCallback(win.GetHandle(), scroll_callback);
             LAM::Cube::Init();
@@ -176,7 +178,7 @@ int main(int argc, const char** argv) {
             shader.Use();
 
             shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
-            shader.setMat4("view", cam.GetViewMatrix());
+            shader.setMat4("view", mat4e);//cam.GetViewMatrix());
             shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
@@ -212,7 +214,7 @@ int main(int argc, const char** argv) {
 #endif
 
         uint counter{};
-        float deltaTime{}, lastFrame{};
+        float lastFrame{};
 
         while(AreAllOpen(windows)) {
             ++counter;
@@ -224,8 +226,6 @@ int main(int argc, const char** argv) {
                 float currentFrame = glfwGetTime();
                 deltaTime = currentFrame - lastFrame;
                 lastFrame = currentFrame;
-
-                processInput(windows[i].GetHandle(), cam, deltaTime);
 
                 renderer->Render(action);
 
@@ -260,12 +260,13 @@ int main(int argc, const char** argv) {
     return 0;
 }
 
-
-void processInput(GLFWwindow *window, LAM::Camera& camera, float deltaTime) {
-    const auto keys = LAM::KeyController::GetKeys();
-    for (auto key : keys) {
-        if (glfwGetKey(window, static_cast<int>(key)) == GLFW_PRESS) {
-            LAM::KeyController::PerformAction(key, camera, deltaTime);
+void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {
+    if (action == GLFW_PRESS) {
+        const auto keys = LAM::KeyController::GetKeys();
+        for (auto key : keys) {
+            if (glfwGetKey(window, static_cast<int>(key)) == GLFW_PRESS) {
+                LAM::KeyController::PerformAction(key, deltaTime);
+            }
         }
     }
 }

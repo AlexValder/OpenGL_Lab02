@@ -26,20 +26,18 @@ namespace LAM {
     /**
      * Debug functions;
      */
-    #ifndef NDEBUG
-    void DebugPrint(std::string& str) {
-        std::cout << str << std::endl;
-    }
-    #else
-    void LAM::DebugPrint(std::string& str) {}
-    #endif
 
     #ifndef NDEBUG
-    void DebugPrint(const char* str) {
+    inline void DebugPrint(const char* str) {
+        std::cout << str << std::endl;
+    }
+
+    inline void DebugPrint(const std::string& str) {
         std::cout << str << std::endl;
     }
     #else
     void LAM::DebugPrint(const char*) {}
+    void LAM::DebugPrint(const std::string&) {}
     #endif
 
 

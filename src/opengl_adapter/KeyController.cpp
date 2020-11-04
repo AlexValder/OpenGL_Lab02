@@ -14,12 +14,12 @@ void KeyController::RemoveActions(Keys key) {
     }
 }
 
-void KeyController::PerformAction(Keys key, Camera& camera, float deltaTime) {
+void KeyController::PerformAction(Keys key, float deltaTime) {
     auto [begin, end] = KeyController::_controls.equal_range(key);
     while (begin != end) {
         auto i = begin->second.index();
         if (i == 0) // CameraAction
-            std::get<0>(begin->second)(camera, deltaTime);
+            std::get<0>(begin->second)(deltaTime);
         else // ActionFunc
             std::get<1>(begin->second)();
         begin++;
