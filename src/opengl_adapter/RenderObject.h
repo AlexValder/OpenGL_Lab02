@@ -3,8 +3,7 @@
 #include <vector>
 
 namespace LAM {
-    class RenderObject
-    {
+    class RenderObject final {
     public:
         RenderObject(std::vector<GLfloat>& data);
     private:

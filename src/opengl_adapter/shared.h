@@ -10,6 +10,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "stb_image.h"
 
+#include <iostream>
 #include <string>
 #include <type_traits>
 #include <memory>
@@ -20,7 +21,27 @@ namespace LAM {
     /**
      * Types
      */
-    typedef  void (*ActionFunc)();
+    typedef void (*ActionFunc)();
+
+    /**
+     * Debug functions;
+     */
+    #ifndef NDEBUG
+    void DebugPrint(std::string& str) {
+        std::cout << str << std::endl;
+    }
+    #else
+    void LAM::DebugPrint(std::string& str) {}
+    #endif
+
+    #ifndef NDEBUG
+    void DebugPrint(const char* str) {
+        std::cout << str << std::endl;
+    }
+    #else
+    void LAM::DebugPrint(const char*) {}
+    #endif
+
 
     /**
      * Dedicated namespace for constants of different types for

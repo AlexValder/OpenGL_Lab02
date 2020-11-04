@@ -2,14 +2,15 @@
 #include <array>
 
 #include "opengl_adapter/Renderer.h"
+#include "opengl_adapter/KeyController.h"
 #include "opengl_adapter/Window.h"
 #include "opengl_adapter/Shader.h"
 #include "opengl_adapter/Camera.h"
 
-#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 0
+#define DRAW_CUBE_INSTEAD_OF_A_TRIANGLE 1
 #define USE_OLD_RENDERER 0
 // how many windows will be opened?
-#define WIN_COUNT 3
+#define WIN_COUNT 1
 
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
 #include "objects_to_draw/Cube.h"
@@ -41,7 +42,36 @@ void move_forward(T vec[], size_t size) {
     }
 }
 
+void processInput(GLFWwindow *, LAM::Camera&, float);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
+static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
+
 int main(int argc, const char** argv) {
+
+    static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
+
+    LAM::KeyController::AddAction(LAM::Keys::A, [](LAM::Camera& cam, float delta){
+        camera.ProcessKeyboard(LAM::CameraMovement::LEFT, delta);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::D, [](LAM::Camera& cam, float delta){
+        camera.ProcessKeyboard(LAM::CameraMovement::RIGHT, delta);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::W, [](LAM::Camera& cam, float delta){
+        camera.ProcessKeyboard(LAM::CameraMovement::FORWARD, delta);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::S, [](LAM::Camera& cam, float delta){
+        camera.ProcessKeyboard(LAM::CameraMovement::BACKWARD, delta);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::Escape, [](){
+        glfwTerminate();
+        exit(0);
+    });
 
     std::cout << "Loban A., PA-18-2" << std::endl;
     try {
@@ -127,11 +157,14 @@ int main(int argc, const char** argv) {
 
         for (auto& win : windows) {
             renderer->MakeContextCurrent(win);
+//            glfwSetCursorPosCallback(win.GetHandle(), mouse_callback);
+//            glfwSetScrollCallback(win.GetHandle(), scroll_callback);
             LAM::Cube::Init();
         }
 
-        auto action = [](){
-            static LAM::Camera cam;
+        LAM::Camera cam(glm::vec3(0.0f));
+
+        auto action = [&](){
 
             static LAM::Shader shader("resources/cube_vertex_shader.vert", "resources/cube_fragment_shader.frag");
             const static GLuint VAO = LAM::Cube::VAO;
@@ -142,10 +175,8 @@ int main(int argc, const char** argv) {
 
             shader.Use();
 
-            auto view = mat4e;
-
             shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
-            shader.setMat4("view", view);
+            shader.setMat4("view", cam.GetViewMatrix());
             shader.setMat4("projection", mat4e);
             shader.setVec4("ourColor", abs(cos(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 2.f)), abs(sin(glfwGetTime() * 1.3f)), 1.f);
 
@@ -181,6 +212,7 @@ int main(int argc, const char** argv) {
 #endif
 
         uint counter{};
+        float deltaTime{}, lastFrame{};
 
         while(AreAllOpen(windows)) {
             ++counter;
@@ -188,6 +220,12 @@ int main(int argc, const char** argv) {
             for (size_t i = 0; i < windows.size(); ++i) {
                 renderer->SetClearColor(colors[i]);
                 renderer->MakeContextCurrent(windows[i]);
+
+                float currentFrame = glfwGetTime();
+                deltaTime = currentFrame - lastFrame;
+                lastFrame = currentFrame;
+
+                processInput(windows[i].GetHandle(), cam, deltaTime);
 
                 renderer->Render(action);
 
@@ -220,4 +258,40 @@ int main(int argc, const char** argv) {
         return -1;
     }
     return 0;
+}
+
+
+void processInput(GLFWwindow *window, LAM::Camera& camera, float deltaTime) {
+    const auto keys = LAM::KeyController::GetKeys();
+    for (auto key : keys) {
+        if (glfwGetKey(window, static_cast<int>(key)) == GLFW_PRESS) {
+            LAM::KeyController::PerformAction(key, camera, deltaTime);
+        }
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    static float lastX{}, lastY{};
+    static bool firstMouse = true;
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    camera.ProcessMouseScroll(yoffset);
 }

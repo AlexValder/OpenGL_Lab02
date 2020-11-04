@@ -9,6 +9,10 @@ static void resize(GLFWwindow * _, int width, int height) {
     glViewport( (width - height) /2.f, 0, height, height);
 }
 
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    glViewport(0, 0, width, height);
+}
+
 // Ctors.
 
 Window::Window(Window&& window) noexcept {
@@ -53,6 +57,7 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
 
         glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
         glfwSetWindowSizeCallback(this->handle, &resize);
+        glfwSetFramebufferSizeCallback(this->handle, framebuffer_size_callback);
 
         glfwSetWindowMonitor(this->handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 
