@@ -225,7 +225,10 @@ namespace LAM {
         float A, R, G, B;
 
         constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, uint8_t Alpha)
-            : A(Alpha/255.f), R(Red/255.f), G(Green/255.f), B(Blue/255.f) {}
+            : A(Alpha/256.f), R(Red/256.f), G(Green/256.f), B(Blue/256.f) {}
+
+        static Color RandomColor();
+        std::string toString() const;
 
         static const Color RED, GREEN, BLUE,
                             CYAN, MAGENTA, YELLOW,

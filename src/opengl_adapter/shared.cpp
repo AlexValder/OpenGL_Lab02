@@ -16,3 +16,21 @@ const LAM::Color LAM::Color::OLIVE = {50, 80, 0, 255};
 const LAM::Color LAM::Color::BLACK = {0, 0, 0, 255};
 const LAM::Color LAM::Color::GRAY = {50, 50, 50, 255};
 const LAM::Color LAM::Color::WHITE = {255, 255, 255, 255};
+
+LAM::Color LAM::Color::RandomColor() {
+    return Color(
+                rand() % 256,
+                rand() % 256,
+                rand() % 256,
+                255
+                );
+}
+
+std::string LAM::Color::toString() const {
+
+    return "(" + std::to_string(static_cast<int>(this->R * 256)) + ", "
+            + std::to_string(static_cast<int>(this->G * 256)) + ", "
+            + std::to_string(static_cast<int>(this->B * 256)) + ", "
+            + std::to_string(static_cast<int>(this->A * 256)) +
+            ")";
+}
