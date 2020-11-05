@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <memory>
 #include <cassert>
+#include <stdarg.h>
 
 namespace LAM {
 
@@ -22,22 +23,29 @@ namespace LAM {
      * Types
      */
     typedef void (*ActionFunc)();
+    typedef void (*CameraAction)(float);
 
     /**
      * Debug functions;
      */
 
     #ifndef NDEBUG
-    inline void DebugPrint(const char* str) {
-        std::cout << str << std::endl;
+    inline void DebugPrint(const char* format , ...) noexcept {
+        va_list arglist;
+        va_start(arglist, format);
+        vprintf(format, arglist);
+        va_end(arglist);
     }
 
-    inline void DebugPrint(const std::string& str) {
-        std::cout << str << std::endl;
+    inline void DebugPrint(const std::string& format, ...) noexcept {
+        va_list arglist;
+        va_start(arglist, format.c_str());
+        vprintf(format.c_str(), arglist);
+        va_end(arglist);
     }
     #else
-    void LAM::DebugPrint(const char*) {}
-    void LAM::DebugPrint(const std::string&) {}
+    inline void LAM::DebugPrint(const char*) noexcept {}
+    inline void LAM::DebugPrint(const char*) noexcept {}
     #endif
 
 

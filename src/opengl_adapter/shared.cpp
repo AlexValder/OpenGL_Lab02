@@ -29,6 +29,7 @@ LAM::Color::operator glm::vec4() const {
     return glm::vec4(this->R, this->G, this->B, this->A);
 }
 
+
 LAM::Color LAM::Color::RandomColor() {
     return Color(
                 rand() % 256,

@@ -8,7 +8,6 @@ namespace LAM {
     class KeyController final {
     public:
 
-        typedef void (*CameraAction)(float);
         using Action = std::variant<CameraAction, ActionFunc>;
 
         static void AddAction(Keys, Action);
