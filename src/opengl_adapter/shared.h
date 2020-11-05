@@ -227,6 +227,12 @@ namespace LAM {
         constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, uint8_t Alpha)
             : A(Alpha/256.f), R(Red/256.f), G(Green/256.f), B(Blue/256.f) {}
 
+        Color(const glm::vec3&);
+        Color(const glm::vec4&);
+
+        operator glm::vec3() const;
+        operator glm::vec4() const;
+
         static Color RandomColor();
         std::string toString() const;
 

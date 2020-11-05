@@ -202,7 +202,7 @@ int main(int argc, const char** argv) {
                                1.f);
             }
             else {
-                shader.setVec4("ourColor", staticColor.R, staticColor.G, staticColor.B, 1.f);
+                shader.setVec4("ourColor", staticColor);
             }
 
             glBindVertexArray(VAO);
