@@ -22,7 +22,7 @@ namespace LAM {
     /**
      * Types
      */
-    typedef void (*ActionFunc)();
+    typedef void (*SimpleAction)();
     typedef void (*CameraAction)(float);
 
     /**
