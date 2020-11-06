@@ -39,49 +39,6 @@ void OldRenderer::SwapBuffers(Window& w) {
     glfwSwapBuffers(w.handle);
 }
 
-//void OldRenderer::RenderTriangles(GLfloat*, GLfloat*) {
-//    assert(isGlfwInit() && isGlewInit());
-
-//    glClear(GL_COLOR_BUFFER_BIT);
-//    glEnable(GL_DEPTH_TEST);
-//    glLoadIdentity();
-
-//    glRotatef(static_cast<float>(glfwGetTime()) * 50.f, 1.f, 1.f, 1.f);
-
-//    glBegin(GL_TRIANGLES);
-//    glColor3f(1.f, 0.f, 0.f);
-//    glVertex3f(-.6f, -.4f, 0.f);
-//    glColor3f(0.f, 1.f, 0.f);
-//    glVertex3f(.6f, -.4f, 0.f);
-//    glColor3f(0.f, 0.f, 1.f);
-//    glVertex3f(0.f, .6f, 0.f);
-//    glEnd();
-
-//}
-
-//void OldRenderer::RenderVBO(GLuint VAO, GLenum TYPE, int size) {
-//    assert(isGlfwInit() && isGlewInit());
-
-//    glBindVertexArray(VAO);
-//    glEnableVertexAttribArray(0);
-
-//    glEnable(GL_DEPTH_TEST);
-
-//    glMatrixMode(GL_MODELVIEW); //set the matrix to model view mode
-
-
-//    glPushMatrix(); // push the matrix
-//    double angle = glfwGetTime() * 50.0f;
-//    glRotatef(angle, 0.5, 1.5, 0.5); //apply transformation
-
-//    glLineWidth(5);
-//    glDrawArrays(TYPE, 0, size);
-
-//    glPopMatrix();
-
-//    glDisableVertexAttribArray(0);
-//}
-
 void OldRenderer::SetClearColor(Color color) {
     assert(isGlfwInit() && isGlewInit());
 

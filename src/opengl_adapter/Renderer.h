@@ -21,9 +21,7 @@ namespace LAM {
             }
         }
 
-//        virtual void RenderTriangles(GLfloat vertices[], GLfloat colors[]) = 0;
         virtual void SetClearColor(Color) = 0;
-//        virtual void RenderVBO(GLuint VAO, GLenum TYPE, int size) = 0;
 
         void PollEvents() {
             glfwPollEvents();
@@ -60,10 +58,7 @@ namespace LAM {
         virtual void InitGLFW(int major_version = 2, int minor_version = 1) override;
         virtual void InitGLEW() override;
         virtual void SwapBuffers(Window&) override;
-//        virtual void RenderTriangles(GLfloat*, GLfloat*) override;
-//        virtual void Render(ActionFunc) override;
         virtual void SetClearColor(Color) override;
-//        virtual void RenderVBO(GLuint VAO, GLenum TYPE, int size) override;
 
         ~OldRenderer() override {};
     };
@@ -73,10 +68,7 @@ namespace LAM {
         virtual void InitGLFW(int major_version = 3, int minor_version = 0) override;
         virtual void InitGLEW() override;
         virtual void SwapBuffers(Window&) override;
-//        virtual void RenderTriangles(GLfloat*, GLfloat*) override;
-//        virtual void Render(ActionFunc) override;
         virtual void SetClearColor(Color) override;
-//        virtual void RenderVBO(GLuint VAO, GLenum TYPE, int size) override;
 
         ~MainRenderer() override {};
     };

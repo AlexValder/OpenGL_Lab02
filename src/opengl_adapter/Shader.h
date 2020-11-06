@@ -25,6 +25,10 @@ namespace LAM {
             glUseProgram(this->_ID);
         }
 
+        void Unuse() const {
+            ; // ?
+        }
+
         GLuint ID() const noexcept {
             return _ID;
         }
