@@ -15,6 +15,7 @@
 #include <type_traits>
 #include <memory>
 #include <cassert>
+#include <stdarg.h>
 
 namespace LAM {
 
@@ -22,22 +23,29 @@ namespace LAM {
      * Types
      */
     typedef void (*ActionFunc)();
+    typedef void (*CameraAction)(float);
 
     /**
      * Debug functions;
      */
 
     #ifndef NDEBUG
-    inline void DebugPrint(const char* str) {
-        std::cout << str << std::endl;
+    inline void DebugPrint(const char* format , ...) noexcept {
+        va_list arglist;
+        va_start(arglist, format);
+        vprintf(format, arglist);
+        va_end(arglist);
     }
 
-    inline void DebugPrint(const std::string& str) {
-        std::cout << str << std::endl;
+    inline void DebugPrint(const std::string& format, ...) noexcept {
+        va_list arglist;
+        va_start(arglist, format.c_str());
+        vprintf(format.c_str(), arglist);
+        va_end(arglist);
     }
     #else
-    void LAM::DebugPrint(const char*) {}
-    void LAM::DebugPrint(const std::string&) {}
+    inline void LAM::DebugPrint(const char*) noexcept {}
+    inline void LAM::DebugPrint(const char*) noexcept {}
     #endif
 
 
@@ -226,6 +234,12 @@ namespace LAM {
 
         constexpr Color(uint8_t Red, uint8_t Green, uint8_t Blue, uint8_t Alpha)
             : A(Alpha/256.f), R(Red/256.f), G(Green/256.f), B(Blue/256.f) {}
+
+        Color(const glm::vec3&);
+        Color(const glm::vec4&);
+
+        operator glm::vec3() const;
+        operator glm::vec4() const;
 
         static Color RandomColor();
         std::string toString() const;
