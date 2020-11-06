@@ -199,12 +199,14 @@ int main(int argc, const char** argv) {
                                abs(cos(glfwGetTime() * 2.f)),
                                abs(sin(glfwGetTime() * 2.f)),
                                abs(sin(glfwGetTime() * 1.3f)),
-                               1.f);
+                               abs(cos(glfwGetTime() * 0.5f)));
             }
             else {
                 shader.setVec4("ourColor", staticColor);
             }
 
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glBindVertexArray(VAO);
             glDrawArrays(TYPE, 0, size);
         };

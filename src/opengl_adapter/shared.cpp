@@ -35,7 +35,7 @@ LAM::Color LAM::Color::RandomColor() {
                 rand() % 256,
                 rand() % 256,
                 rand() % 256,
-                255
+                rand() % 256
                 );
 }
 
