@@ -48,15 +48,15 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
 static float deltaTime{};
-static bool oneColor = false;
-static LAM::Color staticColor = LAM::Color::BLACK;
+static LAM::Color staticColor1 = LAM::Color::BLACK;
+static LAM::Color staticColor2 = LAM::Color::BLACK;
 
 int main(int argc, const char** argv) {
 
     static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
     srand(time(0));
 
-    LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::TEAL, LAM::Color::GRAY, LAM::Color::OLIVE };
+    LAM::Color colors[] = { LAM::Color::GRAY };
 
     LAM::KeyController::AddAction(LAM::Keys::A, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::LEFT, delta);
@@ -80,14 +80,10 @@ int main(int argc, const char** argv) {
     });
 
     LAM::KeyController::AddAction(LAM::Keys::Q, []() {
-       if (oneColor) {
-            staticColor = LAM::Color::RandomColor();
-            LAM::DebugPrint(staticColor.toString());
-       }
-    });
-
-    LAM::KeyController::AddAction(LAM::Keys::C, []() {
-        oneColor = !oneColor;
+        staticColor1 = LAM::Color::RandomColor();
+        LAM::DebugPrint(staticColor1.toString());
+        staticColor2 = LAM::Color::RandomColor();
+        LAM::DebugPrint(staticColor2.toString());
     });
 
     std::cout << "Loban A., PA-18-2" << std::endl;
@@ -194,17 +190,12 @@ int main(int argc, const char** argv) {
             shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
             shader.setMat4("view", mat4e);//cam.GetViewMatrix());
             shader.setMat4("projection", mat4e);
-            if (!oneColor) {
-                shader.setVec4("ourColor",
-                               abs(cos(glfwGetTime() * 2.f)),
-                               abs(sin(glfwGetTime() * 2.f)),
-                               abs(sin(glfwGetTime() * 1.3f)),
-                               1.f);
-            }
-            else {
-                shader.setVec4("ourColor", staticColor);
-            }
-
+            float acc = sin(glfwGetTime() * 2.f) / 2.f + .5f;
+            shader.setVec4("ourColor",
+                           staticColor1.R * acc + staticColor2.R * (1.f-acc),
+                           staticColor1.G * acc + staticColor2.G * (1.f-acc),
+                           staticColor1.B * acc + staticColor2.B * (1.f-acc),
+                           1.f);
             glBindVertexArray(VAO);
             glDrawArrays(TYPE, 0, size);
         };
