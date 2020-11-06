@@ -49,7 +49,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
 static float deltaTime{};
 static LAM::Color staticColor1 = LAM::Color::BLACK;
-static LAM::Color staticColor2 = LAM::Color::BLACK;
+static LAM::Color staticColor2 = LAM::Color::GREEN;
 
 int main(int argc, const char** argv) {
 
