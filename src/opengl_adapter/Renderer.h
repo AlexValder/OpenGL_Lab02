@@ -14,7 +14,7 @@ namespace LAM {
 
         virtual void SwapBuffers(Window&) = 0;
 
-        template <class Callable = ActionFunc>
+        template <class Callable = SimpleAction>
         void Render(Callable action) {
             if (isGlewInit() && isGlfwInit()) {
                 action();

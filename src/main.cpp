@@ -54,6 +54,7 @@ static LAM::Color staticColor = LAM::Color::BLACK;
 int main(int argc, const char** argv) {
 
     static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
+    static_assert(WIN_COUNT >= 1 && WIN_COUNT <= 3, "You can only create from 1 to 3 windows at one time.");
     srand(time(0));
 
     LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::TEAL, LAM::Color::GRAY, LAM::Color::OLIVE };

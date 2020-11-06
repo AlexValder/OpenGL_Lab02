@@ -8,7 +8,7 @@ namespace LAM {
     class KeyController final {
     public:
 
-        using Action = std::variant<CameraAction, ActionFunc>;
+        using Action = std::variant<CameraAction, SimpleAction>;
 
         static void AddAction(Keys, Action);
         static void RemoveActions(Keys);
