@@ -7,3 +7,4 @@ Makefile
 CMakeFiles/
 /out
 /.vs
+/src/opengl_adapter/stb_image.h
