@@ -33,14 +33,6 @@ bool AreAllOpen(const T& vec) {
     return res;
 }
 
-// for changing color and size.
-template <typename T>
-void move_forward(T vec[], size_t size) {
-    for (size_t i = 2; i <= size; ++i) {
-        std::swap(vec[size - i], vec[size - 1]);
-    }
-}
-
 void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode);
 void processInput(GLFWwindow *, LAM::Camera&, float);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -49,15 +41,14 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
 static float deltaTime{};
 static bool oneColor = false;
-static LAM::Color staticColor = LAM::Color::BLACK;
+static LAM::Color cubeColor = LAM::Color::WHITE;
+static LAM::Color bgColor = LAM::Color::BLACK;
 
 int main(int argc, const char** argv) {
 
     static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
     static_assert(WIN_COUNT >= 1 && WIN_COUNT <= 3, "You can only create from 1 to 3 windows at one time.");
     srand(time(0));
-
-    LAM::Color colors[] = { LAM::Color::BLACK, LAM::Color::TEAL, LAM::Color::GRAY, LAM::Color::OLIVE };
 
     LAM::KeyController::AddAction(LAM::Keys::A, [](float delta){
         camera.ProcessKeyboard(LAM::CameraMovement::LEFT, delta);
@@ -82,13 +73,17 @@ int main(int argc, const char** argv) {
 
     LAM::KeyController::AddAction(LAM::Keys::Q, []() {
        if (oneColor) {
-            staticColor = LAM::Color::RandomColor();
-            LAM::DebugPrint(staticColor.toString());
+            cubeColor = LAM::Color::RandomColor();
+            LAM::DebugPrint(cubeColor.toString());
        }
     });
 
     LAM::KeyController::AddAction(LAM::Keys::C, []() {
         oneColor = !oneColor;
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::E, []() {
+        bgColor = LAM::Color::RandomColor(0, 80);
     });
 
     std::cout << "Loban A., PA-18-2" << std::endl;
@@ -101,9 +96,6 @@ int main(int argc, const char** argv) {
         LAM::RendererBase* renderer = new LAM::MainRenderer;
         renderer->InitGLFW(3, 3);
     #endif
-
-        assert(0 < WIN_COUNT && WIN_COUNT <= sizeof(colors)/sizeof(colors[0]));
-        //assert(WIN_COUNT <= sizeof(pos)/sizeof(pos[0]));
 
         std::array<LAM::Window, WIN_COUNT> windows = {
             LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})
@@ -203,7 +195,7 @@ int main(int argc, const char** argv) {
                                abs(cos(glfwGetTime() * 0.5f)));
             }
             else {
-                shader.setVec4("ourColor", staticColor);
+                shader.setVec4("ourColor", cubeColor);
             }
 
             glEnable(GL_BLEND);
@@ -239,14 +231,11 @@ int main(int argc, const char** argv) {
 
 #endif
 
-        uint counter{};
         float lastFrame{};
 
         while(AreAllOpen(windows)) {
-            ++counter;
-
             for (size_t i = 0; i < windows.size(); ++i) {
-                renderer->SetClearColor(colors[i]);
+                renderer->SetClearColor(bgColor);
                 renderer->MakeContextCurrent(windows[i]);
 
                 float currentFrame = glfwGetTime();
@@ -258,12 +247,6 @@ int main(int argc, const char** argv) {
                 renderer->SwapBuffers(windows[i]);
                 renderer->PollEvents();
             }
-
-            if (counter == 100) {
-                move_forward(colors, sizeof(colors)/sizeof(colors[0]));
-                counter = 0;
-            }
-
         }
 #if DRAW_CUBE_INSTEAD_OF_A_TRIANGLE
         for (auto& win : windows) {

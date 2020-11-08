@@ -240,7 +240,7 @@ namespace LAM {
         operator glm::vec3() const;
         operator glm::vec4() const;
 
-        static Color RandomColor();
+        static Color RandomColor(uint8_t lower = 0, uint8_t upper = 255);
         std::string toString() const;
 
         static const Color RED, GREEN, BLUE,

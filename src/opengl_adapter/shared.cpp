@@ -30,12 +30,13 @@ LAM::Color::operator glm::vec4() const {
 }
 
 
-LAM::Color LAM::Color::RandomColor() {
+LAM::Color LAM::Color::RandomColor(uint8_t lower, uint8_t upper) {
+    assert(0 <= lower && lower <= upper && upper <= 255);
     return Color(
-                rand() % 256,
-                rand() % 256,
-                rand() % 256,
-                rand() % 256
+                rand() % upper + lower,
+                rand() % upper + lower,
+                rand() % upper + lower,
+                rand() % upper + lower
                 );
 }
 
