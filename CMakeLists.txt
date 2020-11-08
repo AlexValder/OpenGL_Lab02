@@ -44,6 +44,7 @@ include_directories(${OpenGL_INCLUDE_DIRS})
 # GLEW
 find_package(GLEW REQUIRED)
 include_directories(${GLEW_INCLUDE_DIRS})
+link_libraries(${GLEW_LIBRARIES})
 
 find_package(glm REQUIRED)
 include_directories(${glm_INCLUDE_DIRS})

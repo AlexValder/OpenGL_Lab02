@@ -42,5 +42,6 @@ Any other value is invalid.
 * Mouse scroll - zoom
 
 ### Color Change
-* ```C``` - switch between constant color change and one random color
+* ```C``` - switch between constant color change and one random color.
 * ```Q``` - if constant color change is off, will paint the cube in random color.
+* ```E``` - change background color to a random dark color.
