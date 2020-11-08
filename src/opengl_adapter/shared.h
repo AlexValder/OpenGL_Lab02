@@ -34,6 +34,8 @@ namespace LAM {
         va_start(arglist, format);
         vprintf(format, arglist);
         va_end(arglist);
+        printf("\n");
+        fflush(NULL);
     }
 
     inline void DebugPrint(const std::string& format, ...) noexcept {
@@ -41,6 +43,8 @@ namespace LAM {
         va_start(arglist, format.c_str());
         vprintf(format.c_str(), arglist);
         va_end(arglist);
+        printf("\n");
+        fflush(NULL);
     }
     #else
     inline void LAM::DebugPrint(const char*) noexcept {}

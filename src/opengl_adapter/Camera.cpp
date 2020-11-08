@@ -62,7 +62,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
     }
 
     updateCameraVectors();
-    std::cout << "Mouse moved" << std::endl;
+    DebugPrint("Mouse moved: %f %f", xoffset, yoffset);
 }
 
 
@@ -70,6 +70,5 @@ void Camera::ProcessMouseScroll(float yoffset) {
     _zoom -= yoffset;
     if (_zoom < 1.0f) _zoom = 1.0f;
     if (_zoom > 45.0f) _zoom = 45.0f;
-    std::cout << "Processed mouse scroll" << std::endl;
-    std::cout << "_zoom = " << _zoom << std::endl;
+    DebugPrint("Mouse zoom: %f", _zoom);
 }

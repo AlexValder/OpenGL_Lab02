@@ -74,16 +74,18 @@ int main(int argc, const char** argv) {
     LAM::KeyController::AddAction(LAM::Keys::Q, []() {
        if (oneColor) {
             cubeColor = LAM::Color::RandomColor();
-            LAM::DebugPrint(cubeColor.toString());
+            LAM::DebugPrint("Cube color: %s", cubeColor.toString().c_str());
        }
     });
 
     LAM::KeyController::AddAction(LAM::Keys::C, []() {
         oneColor = !oneColor;
+        LAM::DebugPrint("Manual cube color switching toggled.");
     });
 
     LAM::KeyController::AddAction(LAM::Keys::E, []() {
         bgColor = LAM::Color::RandomColor(0, 80);
+        LAM::DebugPrint("Background color: %s", bgColor.toString().c_str());
     });
 
     std::cout << "Loban A., PA-18-2" << std::endl;
