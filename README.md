@@ -32,6 +32,7 @@ Any other value is invalid.
 
 ### General
 * ```Escape``` - close the program.
+* ```F2``` - toggle fullscreen.
 
 ### Camera Movements (TODO)
 * ```W``` - forward

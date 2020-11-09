@@ -22,19 +22,23 @@ Window::Window(Window&& window) noexcept {
     this->title = std::move(window.title);
 }
 
-Window::Window(const char* title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) {
+Window::Window(const char* title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share)
+    : monitor(monitor), _windowedSize(size) {
     this->master_ctor(title, size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(const char* title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
+Window::Window(const char* title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share)
+    : monitor(monitor), _windowedSize(std::move(size)) {
     this->master_ctor(title, std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
-Window::Window(std::string& title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
+Window::Window(std::string& title, const Point& size, bool resizable, GLFWmonitor* monitor, Window* share)
+    : monitor(monitor), _windowedSize(size) {
     this->master_ctor(title.c_str(), size.x, size.y, resizable, monitor, share);
 }
 
-Window::Window(std::string& title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share) : monitor(monitor) {
+Window::Window(std::string& title, Point&& size, bool resizable, GLFWmonitor* monitor, Window* share)
+    : monitor(monitor), _windowedSize(std::move(size)) {
     this->master_ctor(title.c_str(), std::move(size.x), std::move(size.y), resizable, monitor, share);
 }
 
@@ -90,6 +94,21 @@ void Window::SetInput() {
 
 LAM::KeyMode Window::PressedOrReleased(Keys key) const {
    return static_cast<KeyMode>(glfwGetKey(this->handle, static_cast<int>(key)));
+}
+
+void Window::ToggleFullscreen() {
+    if (!this->monitor) {
+        this->monitor = glfwGetPrimaryMonitor();
+    }
+    const GLFWvidmode* mode = glfwGetVideoMode(this->monitor);
+    DebugPrint("Toggling fullscreen (from %d)...", int(this->_fullscreen));
+    if (!this->_fullscreen) {
+        glfwSetWindowMonitor(this->handle, this->monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        this->_fullscreen = true;
+    } else {
+        glfwSetWindowMonitor(this->handle, nullptr, 0, 0, this->_windowedSize.x, this->_windowedSize.y, mode->refreshRate);
+        this->_fullscreen = false;
+    }
 }
 
 bool Window::AboutToClose() const {

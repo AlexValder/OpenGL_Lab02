@@ -57,6 +57,7 @@ namespace LAM {
 
         void SetInput();
         KeyMode PressedOrReleased(Keys key) const;
+        void ToggleFullscreen();
 
         bool AboutToClose() const;
         void Close();
@@ -68,6 +69,9 @@ namespace LAM {
         GLFWwindow* handle;
         GLFWmonitor* monitor;
         std::string title;
+
+        const Point _windowedSize;
+        bool _fullscreen = false;
 
         void master_ctor(const char*, coord_t, coord_t, bool, GLFWmonitor*, Window*);
     };

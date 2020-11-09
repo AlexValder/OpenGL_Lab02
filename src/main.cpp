@@ -44,6 +44,8 @@ static bool oneColor = false;
 static LAM::Color cubeColor = LAM::Color::WHITE;
 static LAM::Color bgColor = LAM::Color::BLACK;
 
+static std::array<LAM::Window, WIN_COUNT>* currentWindows = nullptr;
+
 int main(int argc, const char** argv) {
 
     static_assert((USE_OLD_RENDERER) ^ (!USE_OLD_RENDERER && (WIN_COUNT == 1)), "You should only use one window with OpenGL 3.0+");
@@ -110,6 +112,19 @@ int main(int argc, const char** argv) {
             LAM::Window(argc >= 4 ? argv[3] : "Test3", {200, 200})
     #endif
         };
+
+        ::currentWindows = &windows;
+
+        LAM::KeyController::AddAction(LAM::Keys::F2, [](){
+            LAM::DebugPrint("In V...");
+            if(::currentWindows) {
+                std::cout << ::currentWindows << std::endl;
+                for (auto& win : *::currentWindows) {
+                    std::cout << win.GetSize() << std::endl;
+                    win.ToggleFullscreen();
+               }
+            }
+        });
 
         renderer->MakeContextCurrent(windows[0]);
         renderer->InitGLEW();
@@ -266,8 +281,11 @@ int main(int argc, const char** argv) {
     catch (std::exception& ex) {
 
         std::cout << ex.what() << std::endl;
+        ::currentWindows = nullptr;
         return -1;
     }
+
+    ::currentWindows = nullptr;
     return 0;
 }
 
