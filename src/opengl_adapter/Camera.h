@@ -14,8 +14,8 @@ namespace LAM {
     // Default camera values
     constexpr float YAW         = -90.0f;
     constexpr float PITCH       =  0.0f;
-    constexpr float SPEED       =  2.5f;
-    constexpr float SENSITIVITY =  0.1f;
+    constexpr float SPEED       =  100.f;
+    constexpr float SENSITIVITY =  0.5f;
     constexpr float ZOOM        =  45.0f;
 
     class Camera final {
@@ -84,7 +84,7 @@ namespace LAM {
         float _yaw;
         float _pitch;
         // camera options
-        float _movementSpeed = 1000.f;
+        float _movementSpeed;
         float _mouseSensitivity;
         float _zoom;
     };

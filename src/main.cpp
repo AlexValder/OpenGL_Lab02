@@ -212,8 +212,7 @@ int main(int argc, const char** argv) {
                                abs(sin(glfwGetTime() * 2.f)),
                                abs(sin(glfwGetTime() * 1.3f)),
                                abs(cos(glfwGetTime() * .5f)));
-            }
-            else {
+            } else {
                 shader.setVec4("ourColor", cubeColor);
             }
 
@@ -292,7 +291,7 @@ int main(int argc, const char** argv) {
 }
 
 void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {
-    if (action == GLFW_RELEASE) {
+    if (action == GLFW_PRESS) {
         LAM::KeyController::PerformAction(static_cast<LAM::Keys>(key), deltaTime);
     }
 }
