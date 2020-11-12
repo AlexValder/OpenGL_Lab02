@@ -188,7 +188,7 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        LAM::Camera cam(glm::vec3(0.f, 0.f, 3.f));
+        LAM::Camera cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f, 1.f, 0.f));
 
         auto action = [&](){
 
@@ -203,21 +203,15 @@ int main(int argc, const char** argv) {
 
             shader.Use();
 
-            glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-            float radius = 1.0f;
-            float camX   = sin(glfwGetTime()) * radius;
-            float camZ   = cos(glfwGetTime()) * radius;
-            view = glm::lookAt(glm::vec3(camX, 0.f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-            shader.setMat4("model", glm::rotate(mat4e, static_cast<float>(glfwGetTime() * glm::radians(66.6f)), glm::vec3(0.f, 1.f, 1.f)));
-            shader.setMat4("view", view);
-            shader.setMat4("projection", mat4e);
+            shader.setMat4("model", mat4e);
+            shader.setMat4("view", cam.GetViewMatrix());
+            shader.setMat4("projection", glm::perspective(glm::radians(camera.Zoom()), 1.f, 0.1f, 100.0f));
             if (!oneColor) {
                 shader.setVec4("ourColor",
                                abs(cos(glfwGetTime() * 2.f)),
                                abs(sin(glfwGetTime() * 2.f)),
                                abs(sin(glfwGetTime() * 1.3f)),
-                               abs(cos(glfwGetTime() * 0.5f)));
+                               abs(cos(glfwGetTime() * .5f)));
             }
             else {
                 shader.setVec4("ourColor", cubeColor);

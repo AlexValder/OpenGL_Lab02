@@ -62,8 +62,8 @@ namespace LAM {
         }
 #define ENDREGION REF GETTERS }
 
-        Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f),
-               glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
+        Camera(glm::vec3 position = glm::vec3(0.f, 0.f, 0.f),
+               glm::vec3 up = glm::vec3(0.f, 1.f, 0.f),
                float yaw = YAW, float pitch = PITCH);
 
         Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
@@ -84,20 +84,8 @@ namespace LAM {
         float _yaw;
         float _pitch;
         // camera options
-        float _movementSpeed;
+        float _movementSpeed = 1000.f;
         float _mouseSensitivity;
         float _zoom;
-
-        void updateCameraVectors() {
-            // calculate the new Front vector
-            glm::vec3 front;
-            front.x = cos(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-            front.y = sin(glm::radians(_pitch));
-            front.z = sin(glm::radians(_yaw)) * cos(glm::radians(_pitch));
-            _front = glm::normalize(_front);
-            // also re-calculate the Right and Up vector
-            _right = glm::normalize(glm::cross(_front, _worldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-            _up    = glm::normalize(glm::cross(_right, _front));
-        }
     };
 }
