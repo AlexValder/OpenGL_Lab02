@@ -32,18 +32,18 @@ void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime) {
     const auto velocity = _movementSpeed * deltaTime;
     switch (direction) {
     case CameraMovement::FORWARD:
-        _position -= velocity * _front;
+        _position -= velocity * glm::vec3(0.f, 0.f, -1.f);
         DebugPrint("Velocity: %f", velocity);
         break;
     case CameraMovement::BACKWARD:
-        _position += velocity * _front;
+        _position += velocity * glm::vec3(0.f, 0.f, -1.f);
         DebugPrint("Velocity: %f", velocity);
         break;
     case CameraMovement::LEFT:
-        _position -= glm::normalize(glm::cross(_front, _up)) * 1.f;
+        _position -= glm::normalize(glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f))) * 1.f;
         break;
     case CameraMovement::RIGHT:
-        _position += glm::normalize(glm::cross(_front, _up)) * 1.f;
+        _position += glm::normalize(glm::cross(glm::vec3(0.f, 0.f, -1.f), glm::vec3(0.f, 1.f, 0.f))) * 1.f;
         break;
     }
     DebugPrint("Position: %f, %f, %f", _position.x, _position.y, _position.z);

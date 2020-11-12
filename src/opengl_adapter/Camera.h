@@ -68,7 +68,6 @@ namespace LAM {
 
         Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-        // returns the view matrix calculated using Euler Angles and the LookAt Matrix
         glm::mat4 GetViewMatrix() const;
         void ProcessKeyboard(CameraMovement direction, float deltaTime);
         void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
