@@ -188,9 +188,11 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        LAM::Camera cam(glm::vec3(0.0f));
+        LAM::Camera cam(glm::vec3(0.f, 0.f, 3.f));
 
         auto action = [&](){
+
+            glEnable(GL_DEPTH_TEST);
 
             static LAM::Shader shader("resources/cube_vertex_shader.vert", "resources/cube_fragment_shader.frag");
             const static GLuint VAO = LAM::Cube::VAO;
@@ -201,8 +203,14 @@ int main(int argc, const char** argv) {
 
             shader.Use();
 
-            shader.setMat4("model", glm::rotate(mat4e, (float)glfwGetTime() * glm::radians(66.6f), glm::vec3(4.04f, 4.2f, 1.3f)));
-            shader.setMat4("view", mat4e);//cam.GetViewMatrix());
+            glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+            float radius = 1.0f;
+            float camX   = sin(glfwGetTime()) * radius;
+            float camZ   = cos(glfwGetTime()) * radius;
+            view = glm::lookAt(glm::vec3(camX, 0.f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+            shader.setMat4("model", glm::rotate(mat4e, static_cast<float>(glfwGetTime() * glm::radians(66.6f)), glm::vec3(0.f, 1.f, 1.f)));
+            shader.setMat4("view", view);
             shader.setMat4("projection", mat4e);
             if (!oneColor) {
                 shader.setVec4("ourColor",

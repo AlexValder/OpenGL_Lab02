@@ -22,7 +22,7 @@ Camera::Camera(float posX, float posY, float posZ, float upX, float upY, float u
 
 // returns the view matrix calculated using Euler Angles and the LookAt Matrix
 glm::mat4 Camera::GetViewMatrix() const {
-    return glm::lookAt(_position, _position + _front, _up);
+    return glm::lookAt(_position, _front, _up);
 }
 
 void Camera::ProcessKeyboard(CameraMovement direction, float deltaTime) {
