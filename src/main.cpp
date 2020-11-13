@@ -68,6 +68,22 @@ int main(int argc, const char** argv) {
         camera.ProcessKeyboard(LAM::CameraMovement::BACKWARD, delta);
     });
 
+    LAM::KeyController::AddAction(LAM::Keys::ArrowLeft, [](float delta){
+        camera.ProcessMouseMovement(-camera.MouseSensitivity() * 100.f, 0);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::ArrowRight, [](float delta){
+        camera.ProcessMouseMovement(camera.MouseSensitivity() * 100.f, 0);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::ArrowUp, [](float delta){
+        camera.ProcessMouseMovement(0, camera.MouseSensitivity() * 100.f);
+    });
+
+    LAM::KeyController::AddAction(LAM::Keys::ArrowDown, [](float delta){
+        camera.ProcessMouseMovement(0, -camera.MouseSensitivity() * 100.f);
+    });
+
     LAM::KeyController::AddAction(LAM::Keys::Escape, [](){
         glfwTerminate();
         exit(0);
@@ -104,7 +120,7 @@ int main(int argc, const char** argv) {
         const auto MONITOR_SIZE = LAM::Window::GetMonitorSize();
 
         std::array<LAM::Window, WIN_COUNT> windows = {
-            LAM::Window(argc >= 2 ? argv[1] : "Test1", MONITOR_SIZE, false, glfwGetPrimaryMonitor())
+            LAM::Window(argc >= 2 ? argv[1] : "Test1", {450, 800})//, MONITOR_SIZE, false, glfwGetPrimaryMonitor())
     #if WIN_COUNT > 1
             ,
             LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475})

@@ -84,6 +84,11 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
         glfwSetWindowCloseCallback(this->handle, [](GLFWwindow* w){ w = nullptr; });
         glfwSetWindowSizeCallback(this->handle, &resize);
         glfwWindowHint(GLFW_RESIZABLE, resizable);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
+        glfwSetInputMode(this->handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+        glfwSetWindowSizeLimits(this->handle, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
     }
 }
 

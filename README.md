@@ -39,7 +39,7 @@ Any other value is invalid.
 * ```A``` - left
 * ```S``` - backwards
 * ```D``` - right
-* Mouse movements - rotation
+* Mouse movements or key arrows - rotation
 * Mouse scroll - zoom
 
 ### Color Change
