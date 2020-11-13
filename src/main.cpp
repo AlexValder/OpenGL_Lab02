@@ -38,7 +38,7 @@ void processInput(GLFWwindow *, LAM::Camera&, float);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
-static LAM::Camera camera(0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0, 1.0f, 10.f);
+static LAM::Camera camera(glm::vec3(0.f, 0.f, 5.f));
 static float deltaTime{};
 static bool oneColor = false;
 static LAM::Color cubeColor = LAM::Color::WHITE;
@@ -101,8 +101,10 @@ int main(int argc, const char** argv) {
         renderer->InitGLFW(3, 3);
     #endif
 
+        const auto MONITOR_SIZE = LAM::Window::GetMonitorSize();
+
         std::array<LAM::Window, WIN_COUNT> windows = {
-            LAM::Window(argc >= 2 ? argv[1] : "Test1", {700, 700})
+            LAM::Window(argc >= 2 ? argv[1] : "Test1", MONITOR_SIZE, false, glfwGetPrimaryMonitor())
     #if WIN_COUNT > 1
             ,
             LAM::Window(argc >= 3 ? argv[2] : "Test2", {475, 475})
@@ -188,8 +190,6 @@ int main(int argc, const char** argv) {
             LAM::Cube::Init();
         }
 
-        LAM::Camera cam(glm::vec3(0.f, 0.f, 5.f), glm::vec3(0.f, 1.f, 0.f));
-
         auto action = [&](){
 
             glEnable(GL_DEPTH_TEST);
@@ -204,8 +204,10 @@ int main(int argc, const char** argv) {
             shader.Use();
 
             shader.setMat4("model", mat4e);
-            shader.setMat4("view", cam.GetViewMatrix());
-            shader.setMat4("projection", glm::perspective(glm::radians(camera.Zoom()), 1.f, 0.1f, 100.0f));
+            shader.setMat4("view", camera.GetViewMatrix());
+            shader.setMat4("projection", glm::perspective(glm::radians(camera.Zoom()),
+                                                          float(MONITOR_SIZE.y)/float(MONITOR_SIZE.x),
+                                                          0.1f, 100.0f));
             if (!oneColor) {
                 shader.setVec4("ourColor",
                                abs(cos(glfwGetTime() * 2.f)),
@@ -291,7 +293,7 @@ int main(int argc, const char** argv) {
 }
 
 void keyCallback(GLFWwindow * window, int key, int scancode, int action, int mode) {
-    if (action == GLFW_PRESS) {
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
         LAM::KeyController::PerformAction(static_cast<LAM::Keys>(key), deltaTime);
     }
 }
@@ -313,7 +315,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    camera.ProcessMouseMovement(xoffset, yoffset);
+    camera.ProcessMouseMovement(xoffset, yoffset, false);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called

@@ -4,9 +4,9 @@
 
 using namespace LAM;
 
-static void resize(GLFWwindow * _, int width, int height) {
-    glfwSetWindowAspectRatio(_, width, height);
-    glViewport( (width - height) /2.f, 0, height, height);
+static void resize(GLFWwindow * w, int width, int height) {
+    glfwSetWindowAspectRatio(w, width, height);
+    glViewport(0, 0, width, height);
 }
 
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -50,8 +50,11 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
         glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
         glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
         glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(GL_CCW);
 
-        this->handle = glfwCreateWindow(mode->height, mode->height, title, nullptr, nullptr);
+        this->handle = glfwCreateWindow(mode->width, mode->height, title, nullptr, nullptr);
 
         if (!this->handle) {
             int err_code = glGetError();
@@ -63,7 +66,10 @@ void Window::master_ctor(const char* title, coord_t height, coord_t width, bool 
         glfwSetWindowSizeCallback(this->handle, &resize);
         glfwSetFramebufferSizeCallback(this->handle, framebuffer_size_callback);
 
+        glfwSetWindowSizeLimits(this->handle, 640, 480, GLFW_DONT_CARE, GLFW_DONT_CARE);
+
         glfwSetWindowMonitor(this->handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        glfwSetInputMode(this->handle, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     }
     else {
@@ -182,4 +188,9 @@ void Window::Close() {
         glfwSetWindowShouldClose(this->handle, 1);
         this->handle = nullptr;
     }
+}
+
+Window::Point Window::GetMonitorSize() noexcept {
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    return {mode->height, mode->width};
 }

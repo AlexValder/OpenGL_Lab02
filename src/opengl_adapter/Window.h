@@ -65,6 +65,8 @@ namespace LAM {
         GLFWwindow* GetHandle();
         GLFWmonitor* GetMonitor();
 
+        static Point GetMonitorSize() noexcept;
+
     private:
         GLFWwindow* handle;
         GLFWmonitor* monitor;
